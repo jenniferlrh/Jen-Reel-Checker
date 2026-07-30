@@ -1,8 +1,8 @@
 import './ReelDetail.css'
 
-export default function ReelDetail({ reel, onBack }) {
+export default function ReelDetail({ reel, onBack, isSaved, onToggleSave }) {
   const handleSave = () => {
-    alert('Analysis saved as markdown!')
+    alert('✅ Analysis saved as markdown!')
   }
 
   return (
@@ -69,6 +69,9 @@ export default function ReelDetail({ reel, onBack }) {
 
           <div className="detail-buttons">
             <button className="btn btn-secondary" onClick={onBack}>Close</button>
+            <button className="btn btn-save" onClick={() => onToggleSave()}>
+              {isSaved ? '❤️ Saved' : '🤍 Save'}
+            </button>
             <button className="btn btn-primary" onClick={handleSave}>Save as .md</button>
           </div>
         </div>

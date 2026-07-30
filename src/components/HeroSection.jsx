@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './HeroSection.css'
 
-export default function HeroSection({ onAnalyzeReel, reelCount }) {
+export default function HeroSection({ onAnalyzeReel, reelCount, onViewSaved }) {
   const [inputValue, setInputValue] = useState('')
 
   const handleAnalyze = () => {
@@ -32,6 +32,7 @@ export default function HeroSection({ onAnalyzeReel, reelCount }) {
         <div className="nav-links">
           <a href="#features">Features</a>
           <a href="#analyze">Analyze</a>
+          <button onClick={onViewSaved} className="nav-saved-btn">💾 Saved</button>
         </div>
         <div className="hamburger">
           <span></span>
