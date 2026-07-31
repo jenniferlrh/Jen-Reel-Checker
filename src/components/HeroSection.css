@@ -343,19 +343,88 @@
 }
 
 @media (max-width: 768px) {
-  .hero-content {
-    grid-template-columns: 1fr;
+  .hero-section {
+    height: auto;
+    min-height: 100vh;
+    padding-top: 72px;
+    padding-bottom: 2rem;
   }
 
+  .nav {
+    padding: 1rem 1.25rem;
+    background: rgba(61, 44, 109, 0.85);
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-logo {
+    font-size: 17px;
+  }
+
+  /* 隐藏文字链接，但保留 Saved 按钮 */
   .nav-links {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .nav-links a {
     display: none;
   }
 
-  .content-title {
-    font-size: 32px;
+  .nav-saved-btn {
+    padding: 0.45rem 0.9rem;
+    font-size: 13px;
   }
 
+  .hamburger {
+    display: none;
+  }
+
+  .hero-content {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+
+  .content-card {
+    padding: 2rem 1.5rem;
+    border-radius: 24px;
+  }
+
+  .content-title {
+    font-size: 28px;
+  }
+
+  .input-wrapper {
+    flex-direction: column;
+  }
+
+  .input-wrapper button {
+    width: 100%;
+    padding: 0.9rem;
+  }
+
+  .stats-row {
+    justify-content: space-around;
+  }
+
+  /* 手机上隐藏浮动展示卡和大色块，避免占满屏幕 */
   .visual-showcase {
-    margin-top: 3rem;
+    display: none;
+  }
+
+  .shape-2,
+  .shape-3,
+  .shape-4 {
+    display: none;
+  }
+
+  .shape-1 {
+    width: 220px;
+    height: 170px;
+  }
+
+  .shape-5 {
+    width: 120px;
+    height: 120px;
   }
 }
