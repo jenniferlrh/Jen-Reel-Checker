@@ -5,10 +5,8 @@ export default function HeroSection({ onAnalyzeReel, reelCount, onViewSaved }) {
   const [inputValue, setInputValue] = useState('')
 
   const handleAnalyze = () => {
-    if (inputValue.trim()) {
-      onAnalyzeReel(inputValue)
-      setInputValue('')
-    }
+    onAnalyzeReel(inputValue)
+    setInputValue('')
   }
 
   const handleKeyPress = (e) => {

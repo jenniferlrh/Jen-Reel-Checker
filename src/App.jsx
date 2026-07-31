@@ -4,6 +4,7 @@ import HeroSection from './components/HeroSection'
 import ReelsList from './components/ReelsList'
 import ReelDetail from './components/ReelDetail'
 import SavedReels from './components/SavedReels'
+import AnalyzeForm from './components/AnalyzeForm'
 
 const INITIAL_REELS = [
   { id: 1, creator: '@reythean_ruizhi', title: '少数人敢走的路', likes: 3, transcript: '少数人敢走的路。Most people follow the same path, but some brave souls dare to walk a different road.', hookScore: 6.5, category: '个人成长' },
@@ -28,6 +29,7 @@ function App() {
     return saved ? JSON.parse(saved) : []
   })
   const [sortBy, setSortBy] = useState('latest')
+  const [showAnalyzeForm, setShowAnalyzeForm] = useState(false)
 
   useEffect(() => {
     localStorage.setItem('savedReels', JSON.stringify(savedReelIds))
@@ -47,20 +49,28 @@ function App() {
     return 0
   })
 
-  const handleAnalyzeReel = (url) => {
-    if (url.trim()) {
-      const newReel = {
-        id: Math.max(...reels.map(r => r.id)) + 1,
-        creator: '@newcreator',
-        title: 'New Reel Analysis',
-        likes: 0,
-        transcript: 'Reel analysis in progress...',
-        hookScore: 0,
-        category: '新分析'
-      }
-      setReels([newReel, ...reels])
-      alert('✨ Reel queued for analysis!')
+  const handleAnalyzeReel = () => {
+    setShowAnalyzeForm(true)
+  }
+
+  const handleAnalyzed = ({ creator, title, transcript, analysis }) => {
+    const newReel = {
+      id: Math.max(...reels.map(r => r.id)) + 1,
+      creator: creator || '@unknown',
+      title: title || analysis.summary,
+      likes: 0,
+      transcript,
+      hookScore: analysis.hookScore,
+      category: analysis.category,
+      summary: analysis.summary,
+      insights: analysis.insights,
+      suggestions: analysis.suggestions,
+      improvedHooks: analysis.improvedHooks
     }
+    setReels([newReel, ...reels])
+    setShowAnalyzeForm(false)
+    setSelectedReel(newReel)
+    setCurrentPage('detail')
   }
 
   const handleViewDetail = (reel) => {
@@ -110,6 +120,12 @@ function App() {
           isSaved={isSaved}
           onToggleSave={() => handleToggleSave(selectedReel.id)}
           savedCount={savedReels.length}
+        />
+      )}
+      {showAnalyzeForm && (
+        <AnalyzeForm
+          onClose={() => setShowAnalyzeForm(false)}
+          onAnalyzed={handleAnalyzed}
         />
       )}
       {currentPage === 'saved' && (

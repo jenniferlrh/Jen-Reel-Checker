@@ -1,0 +1,128 @@
+.analyze-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 20, 60, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.analyze-modal {
+  background: white;
+  border-radius: 24px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 560px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.analyze-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #f0f0f0;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.analyze-close:hover {
+  background: #e0e0e0;
+  transform: rotate(90deg);
+}
+
+.analyze-modal h2 {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.analyze-hint {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 1.5rem;
+}
+
+.analyze-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.analyze-row input {
+  flex: 1;
+  border: 2px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 14px;
+  background: #fafafa;
+  transition: all 0.3s;
+}
+
+.analyze-row input:focus {
+  outline: none;
+  border-color: #7c8cff;
+  background: white;
+}
+
+.analyze-modal textarea {
+  width: 100%;
+  border: 2px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 1rem;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fafafa;
+  resize: vertical;
+  transition: all 0.3s;
+  margin-bottom: 1rem;
+}
+
+.analyze-modal textarea:focus {
+  outline: none;
+  border-color: #7c8cff;
+  background: white;
+}
+
+.analyze-error {
+  background: #fff2f2;
+  border: 1px solid #ffcdd2;
+  color: #c62828;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 13px;
+  margin-bottom: 1rem;
+}
+
+.analyze-submit {
+  width: 100%;
+  background: linear-gradient(135deg, #7c8cff, #9c27b0);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 8px 20px rgba(124, 140, 255, 0.4);
+}
+
+.analyze-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(124, 140, 255, 0.5);
+}
+
+.analyze-submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}

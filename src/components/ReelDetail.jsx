@@ -49,23 +49,46 @@ export default function ReelDetail({ reel, onBack, isSaved, onToggleSave }) {
 
           <div className="detail-section-title">Analysis Insights</div>
           <div className="insights-list">
-            <div className="insight-item">
-              <span className="insight-icon">✨</span>
-              <span>Strong hook within first 3 seconds</span>
-            </div>
-            <div className="insight-item">
-              <span className="insight-icon">📊</span>
-              <span>High engagement rate for content type</span>
-            </div>
-            <div className="insight-item">
-              <span className="insight-icon">🎯</span>
-              <span>Clear call-to-action or narrative flow</span>
-            </div>
-            <div className="insight-item">
-              <span className="insight-icon">👥</span>
-              <span>Resonates with target audience demographics</span>
-            </div>
+            {(reel.insights && reel.insights.length > 0 ? reel.insights : [
+              'Strong hook within first 3 seconds',
+              'High engagement rate for content type',
+              'Clear call-to-action or narrative flow',
+              'Resonates with target audience demographics'
+            ]).map((insight, i) => (
+              <div className="insight-item" key={i}>
+                <span className="insight-icon">{['✨', '📊', '🎯', '👥', '💡'][i % 5]}</span>
+                <span>{insight}</span>
+              </div>
+            ))}
           </div>
+
+          {reel.suggestions && reel.suggestions.length > 0 && (
+            <>
+              <div className="detail-section-title">💪 改进建议</div>
+              <div className="insights-list">
+                {reel.suggestions.map((s, i) => (
+                  <div className="insight-item" key={i}>
+                    <span className="insight-icon">🔧</span>
+                    <span>{s}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {reel.improvedHooks && reel.improvedHooks.length > 0 && (
+            <>
+              <div className="detail-section-title">🚀 更好的开头 Hook</div>
+              <div className="insights-list">
+                {reel.improvedHooks.map((h, i) => (
+                  <div className="insight-item" key={i}>
+                    <span className="insight-icon">✍️</span>
+                    <span>"{h}"</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
           <div className="detail-buttons">
             <button className="btn btn-secondary" onClick={onBack}>Close</button>
