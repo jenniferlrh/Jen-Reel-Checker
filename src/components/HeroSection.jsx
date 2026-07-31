@@ -28,14 +28,8 @@ export default function HeroSection({ onAnalyzeReel, reelCount, onViewSaved }) {
       <div className="nav">
         <div className="nav-logo">🎬 Jen Reel Checker</div>
         <div className="nav-links">
-          <a href="#features">Features</a>
-          <a href="#analyze">Analyze</a>
+          <a href="#analyze" onClick={(e) => { e.preventDefault(); onAnalyzeReel('') }}>Analyze</a>
           <button onClick={onViewSaved} className="nav-saved-btn">💾 Saved</button>
-        </div>
-        <div className="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
         </div>
       </div>
 
@@ -46,7 +40,7 @@ export default function HeroSection({ onAnalyzeReel, reelCount, onViewSaved }) {
           <div className="content-desc">
             Discover what makes Instagram reels go viral. AI-powered analysis with real-time insights and actionable data for creators.
           </div>
-          <button className="cta-button">Get Started</button>
+          <button className="cta-button" onClick={handleAnalyze}>Get Started</button>
 
           <div className="input-section">
             <label className="input-label">ANALYZE A REEL</label>

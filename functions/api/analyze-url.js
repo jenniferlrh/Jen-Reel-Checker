@@ -1,5 +1,6 @@
 // Cloudflare Pages Function: POST /api/analyze-url
-// Full pipeline: Instagram reel URL -> Apify scrape -> Whisper transcription -> Claude analysis
+// Multi-platform pipeline: video URL (IG / TikTok / XHS / Facebook)
+//   -> Apify scrape -> Whisper transcription -> Claude analysis
 // Requires env vars: APIFY_TOKEN, OPENAI_API_KEY, ANTHROPIC_API_KEY
 
 const ANALYSIS_SCHEMA = {
@@ -7,11 +8,11 @@ const ANALYSIS_SCHEMA = {
   properties: {
     hookScore: { type: 'number', description: 'Hook strength score from 0 to 10, one decimal allowed' },
     category: { type: 'string', description: 'Short content category in Chinese, e.g. 个人成长, 金融, 房产' },
-    summary: { type: 'string', description: 'One-sentence summary of the reel in Chinese' },
+    summary: { type: 'string', description: 'One-sentence summary of the video in Chinese' },
     insights: {
       type: 'array',
       items: { type: 'string' },
-      description: '3-5 analysis insights about why this reel works or not, in Chinese',
+      description: '3-5 analysis insights about why this video works or not, in Chinese',
     },
     suggestions: {
       type: 'array',
@@ -28,12 +29,92 @@ const ANALYSIS_SCHEMA = {
   additionalProperties: false,
 }
 
+const PLATFORMS = [
+  {
+    name: 'instagram',
+    match: (u) => /instagram\.com\/(reel|reels|p)\//.test(u),
+    actor: 'apify~instagram-scraper',
+    input: (u) => ({ directUrls: [u], resultsType: 'posts', resultsLimit: 1, addParentData: false }),
+  },
+  {
+    name: 'tiktok',
+    match: (u) => /tiktok\.com\//.test(u) || /vt\.tiktok\.com\//.test(u),
+    actor: 'clockworks~tiktok-video-scraper',
+    input: (u) => ({ postURLs: [u], resultsPerPage: 1 }),
+  },
+  {
+    name: 'xiaohongshu',
+    match: (u) => /xiaohongshu\.com\//.test(u) || /xhslink\.com\//.test(u),
+    actor: 'easyapi~rednote-xiaohongshu-video-downloader',
+    input: (u) => ({ links: [u] }),
+  },
+  {
+    name: 'facebook',
+    match: (u) => /facebook\.com\//.test(u) || /fb\.watch\//.test(u),
+    actor: 'solid-scraper~facebook-video-downloader',
+    input: (u) => ({ video_urls: [u], requested_resolution: 'SD' }),
+  },
+]
+
+function deepFindVideoUrl(obj, depth = 0) {
+  if (depth > 6 || obj == null) return null
+  if (typeof obj === 'string') {
+    if (/^https?:\/\//.test(obj) && (/\.mp4/i.test(obj) || /mime_type=video/i.test(obj))) return obj
+    return null
+  }
+  if (Array.isArray(obj)) {
+    for (const v of obj) {
+      const found = deepFindVideoUrl(v, depth + 1)
+      if (found) return found
+    }
+    return null
+  }
+  if (typeof obj === 'object') {
+    // Prefer well-known fields first
+    const preferred = [
+      'videoUrl', 'video_url', 'videoUrlBackup', 'downloadUrl', 'download_url',
+      'downloadAddr', 'playAddr', 'videoDownloadUrl', 'hd_url', 'sd_url', 'url_hd', 'url_sd',
+    ]
+    for (const key of preferred) {
+      const v = obj[key]
+      if (typeof v === 'string' && /^https?:\/\//.test(v)) return v
+    }
+    for (const v of Object.values(obj)) {
+      const found = deepFindVideoUrl(v, depth + 1)
+      if (found) return found
+    }
+  }
+  return null
+}
+
+function pickMeta(item) {
+  const creator =
+    item.ownerUsername ||
+    item.authorMeta?.name ||
+    item.author?.nickname ||
+    item.author?.name ||
+    item.authorName ||
+    item.nickname ||
+    item.username ||
+    item.uploader ||
+    null
+  const caption =
+    item.caption || item.text || item.desc || item.description || item.title || ''
+  const likes =
+    item.likesCount ?? item.diggCount ?? item.likes ?? item.like_count ?? item.likedCount ?? 0
+  return {
+    creator: creator ? `@${String(creator).replace(/^@/, '')}` : '@unknown',
+    caption: String(caption).slice(0, 200),
+    likes: Number(likes) || 0,
+  }
+}
+
 export async function onRequestPost(context) {
   const { request, env } = context
 
   const missing = ['APIFY_TOKEN', 'OPENAI_API_KEY', 'ANTHROPIC_API_KEY'].filter((k) => !env[k])
   if (missing.length > 0) {
-    return jsonResponse({ error: `还没设置环境变量: ${missing.join(', ')}。去 Cloudflare Pages → Settings → Variables and secrets 添加。` }, 500)
+    return jsonResponse({ error: `还没设置环境变量: ${missing.join(', ')}。` }, 500)
   }
 
   let body
@@ -44,47 +125,47 @@ export async function onRequestPost(context) {
   }
 
   const url = (body.url || '').trim()
-  if (!/instagram\.com\/(reel|reels|p)\//.test(url)) {
-    return jsonResponse({ error: '请提供有效的 Instagram reel 链接，例如 https://www.instagram.com/reel/xxxx/' }, 400)
+  const platform = PLATFORMS.find((p) => p.match(url))
+  if (!platform) {
+    return jsonResponse(
+      { error: '暂不支持这个链接。支持：Instagram、TikTok、小红书、Facebook 的视频链接。' },
+      400
+    )
   }
 
-  // ---- Step 1: Scrape reel metadata + video URL via Apify ----
+  // ---- Step 1: Scrape video metadata + direct video URL via Apify ----
   let item
   try {
     const apifyRes = await fetch(
-      `https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync-get-dataset-items?token=${env.APIFY_TOKEN}&timeout=120`,
+      `https://api.apify.com/v2/acts/${platform.actor}/run-sync-get-dataset-items?token=${env.APIFY_TOKEN}&timeout=150`,
       {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          directUrls: [url],
-          resultsType: 'posts',
-          resultsLimit: 1,
-          addParentData: false,
-        }),
+        body: JSON.stringify(platform.input(url)),
       }
     )
     if (!apifyRes.ok) {
       const t = await apifyRes.text()
-      return jsonResponse({ error: `抓取 Instagram 数据失败 (Apify ${apifyRes.status})`, detail: t.slice(0, 500) }, 502)
+      return jsonResponse(
+        { error: `抓取 ${platform.name} 数据失败 (Apify ${apifyRes.status})`, detail: t.slice(0, 500) },
+        502
+      )
     }
     const items = await apifyRes.json()
     item = Array.isArray(items) ? items[0] : null
   } catch (e) {
-    return jsonResponse({ error: `抓取 Instagram 数据出错: ${e.message}` }, 502)
+    return jsonResponse({ error: `抓取数据出错: ${e.message}` }, 502)
   }
 
   if (!item) {
-    return jsonResponse({ error: '抓不到这条 reel 的数据。确认链接是公开的 reel，或稍后重试。' }, 404)
+    return jsonResponse({ error: '抓不到这条视频的数据。确认链接是公开的，或稍后重试。' }, 404)
   }
 
-  const videoUrl = item.videoUrl || item.videoUrlBackup || null
-  const creator = item.ownerUsername ? `@${item.ownerUsername}` : '@unknown'
-  const caption = (item.caption || '').slice(0, 200)
-  const likes = item.likesCount ?? 0
+  const videoUrl = deepFindVideoUrl(item)
+  const meta = pickMeta(item)
 
   if (!videoUrl) {
-    return jsonResponse({ error: '这条帖子没有视频（可能是图片帖），无法转录。' }, 422)
+    return jsonResponse({ error: '这条帖子里找不到视频（可能是图片帖），无法转录。' }, 422)
   }
 
   // ---- Step 2: Download video and transcribe with OpenAI Whisper ----
@@ -96,11 +177,11 @@ export async function onRequestPost(context) {
     }
     const videoBlob = await videoRes.blob()
     if (videoBlob.size > 24 * 1024 * 1024) {
-      return jsonResponse({ error: '视频超过 24MB，太长了无法转录（先支持短 reel）。' }, 422)
+      return jsonResponse({ error: '视频超过 24MB，太长了无法转录（先支持短视频）。' }, 422)
     }
 
     const form = new FormData()
-    form.append('file', videoBlob, 'reel.mp4')
+    form.append('file', videoBlob, 'video.mp4')
     form.append('model', 'whisper-1')
 
     const whisperRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {
@@ -119,14 +200,15 @@ export async function onRequestPost(context) {
   }
 
   if (!transcript) {
-    transcript = '(这条 reel 没有语音内容，仅有画面/音乐)'
+    transcript = '(这条视频没有语音内容，仅有画面/音乐)'
   }
 
   // ---- Step 3: Analyze with Claude ----
-  const prompt = `你是 Instagram Reel 内容策略专家。分析以下 reel 的文字稿，评估它的 hook（开头吸引力）、内容结构和传播潜力。
+  const prompt = `你是短视频内容策略专家（Instagram Reels / TikTok / 小红书 / Facebook Reels）。分析以下视频的文字稿，评估它的 hook（开头吸引力）、内容结构和传播潜力。
 
-创作者: ${creator}
-${caption ? `帖子文案: ${caption}\n` : ''}点赞数: ${likes}
+平台: ${platform.name}
+创作者: ${meta.creator}
+${meta.caption ? `帖子文案: ${meta.caption}\n` : ''}点赞数: ${meta.likes}
 文字稿:
 """
 ${transcript}
@@ -156,7 +238,7 @@ ${transcript}
 
   const data = await claudeRes.json()
   if (data.stop_reason === 'refusal') {
-    return jsonResponse({ error: '这段内容无法分析，请换一条 reel。' }, 422)
+    return jsonResponse({ error: '这段内容无法分析，请换一条视频。' }, 422)
   }
 
   const textBlock = (data.content || []).find((b) => b.type === 'text')
@@ -170,7 +252,7 @@ ${transcript}
   return jsonResponse({
     analysis,
     transcript,
-    meta: { creator, caption, likes, url },
+    meta: { ...meta, url, platform: platform.name },
   })
 }
 

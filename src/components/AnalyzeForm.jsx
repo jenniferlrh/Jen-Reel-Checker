@@ -14,7 +14,7 @@ export default function AnalyzeForm({ onClose, onAnalyzed }) {
     setError('')
     if (mode === 'url') {
       if (!url.trim()) {
-        setError('请贴上 Instagram reel 链接')
+        setError('请贴上视频链接（IG / TikTok / 小红书 / FB）')
         return
       }
       setLoading(true)
@@ -84,11 +84,11 @@ export default function AnalyzeForm({ onClose, onAnalyzed }) {
 
         {mode === 'url' ? (
           <>
-            <p className="analyze-hint">贴上 reel 链接，自动抓取 → 转文字 → AI 分析（约 1-2 分钟）</p>
+            <p className="analyze-hint">支持 Instagram / TikTok / 小红书 / Facebook 视频链接，自动抓取 → 转文字 → AI 分析（约 1-2 分钟）</p>
             <input
               className="analyze-url-input"
               type="text"
-              placeholder="https://www.instagram.com/reel/xxxx/"
+              placeholder="贴上 IG / TikTok / 小红书 / FB 视频链接"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
