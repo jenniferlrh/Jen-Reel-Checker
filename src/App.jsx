@@ -53,12 +53,12 @@ function App() {
     setShowAnalyzeForm(true)
   }
 
-  const handleAnalyzed = ({ creator, title, transcript, analysis }) => {
+  const handleAnalyzed = ({ creator, title, transcript, analysis, likes }) => {
     const newReel = {
       id: Math.max(...reels.map(r => r.id)) + 1,
       creator: creator || '@unknown',
       title: title || analysis.summary,
-      likes: 0,
+      likes: likes || 0,
       transcript,
       hookScore: analysis.hookScore,
       category: analysis.category,

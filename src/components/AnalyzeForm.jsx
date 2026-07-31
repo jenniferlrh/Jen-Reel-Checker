@@ -2,6 +2,8 @@ import { useState } from 'react'
 import './AnalyzeForm.css'
 
 export default function AnalyzeForm({ onClose, onAnalyzed }) {
+  const [mode, setMode] = useState('url')
+  const [url, setUrl] = useState('')
   const [creator, setCreator] = useState('')
   const [title, setTitle] = useState('')
   const [transcript, setTranscript] = useState('')
@@ -9,27 +11,53 @@ export default function AnalyzeForm({ onClose, onAnalyzed }) {
   const [error, setError] = useState('')
 
   const handleSubmit = async () => {
-    if (!transcript.trim()) {
-      setError('请贴上 reel 的文字稿')
-      return
-    }
-    setLoading(true)
     setError('')
-    try {
-      const res = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ creator, title, transcript }),
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        throw new Error(data.error || `分析失败 (${res.status})`)
+    if (mode === 'url') {
+      if (!url.trim()) {
+        setError('请贴上 Instagram reel 链接')
+        return
       }
-      onAnalyzed({ creator, title, transcript, analysis: data.analysis })
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
+      setLoading(true)
+      try {
+        const res = await fetch('/api/analyze-url', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ url }),
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error || `分析失败 (${res.status})`)
+        onAnalyzed({
+          creator: data.meta.creator,
+          title: data.meta.caption || data.analysis.summary,
+          likes: data.meta.likes,
+          transcript: data.transcript,
+          analysis: data.analysis,
+        })
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    } else {
+      if (!transcript.trim()) {
+        setError('请贴上 reel 的文字稿')
+        return
+      }
+      setLoading(true)
+      try {
+        const res = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ creator, title, transcript }),
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error || `分析失败 (${res.status})`)
+        onAnalyzed({ creator, title, transcript, analysis: data.analysis })
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -38,34 +66,67 @@ export default function AnalyzeForm({ onClose, onAnalyzed }) {
       <div className="analyze-modal" onClick={(e) => e.stopPropagation()}>
         <button className="analyze-close" onClick={onClose}>✕</button>
         <h2>🎬 AI 分析 Reel</h2>
-        <p className="analyze-hint">把 reel 里说的话（文字稿）贴进来，AI 帮你评分和给建议</p>
 
-        <div className="analyze-row">
-          <input
-            type="text"
-            placeholder="@创作者 (可选)"
-            value={creator}
-            onChange={(e) => setCreator(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="标题 (可选)"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+        <div className="analyze-tabs">
+          <button
+            className={mode === 'url' ? 'tab active' : 'tab'}
+            onClick={() => setMode('url')}
+          >
+            🔗 贴链接（全自动）
+          </button>
+          <button
+            className={mode === 'transcript' ? 'tab active' : 'tab'}
+            onClick={() => setMode('transcript')}
+          >
+            📝 贴文字稿
+          </button>
         </div>
 
-        <textarea
-          placeholder="贴上 reel 的文字稿... 例如：Most people follow the same path, but..."
-          value={transcript}
-          onChange={(e) => setTranscript(e.target.value)}
-          rows={8}
-        />
+        {mode === 'url' ? (
+          <>
+            <p className="analyze-hint">贴上 reel 链接，自动抓取 → 转文字 → AI 分析（约 1-2 分钟）</p>
+            <input
+              className="analyze-url-input"
+              type="text"
+              placeholder="https://www.instagram.com/reel/xxxx/"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
+          </>
+        ) : (
+          <>
+            <p className="analyze-hint">把 reel 里说的话（文字稿）贴进来，AI 帮你评分和给建议</p>
+            <div className="analyze-row">
+              <input
+                type="text"
+                placeholder="@创作者 (可选)"
+                value={creator}
+                onChange={(e) => setCreator(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="标题 (可选)"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <textarea
+              placeholder="贴上 reel 的文字稿... 例如：Most people follow the same path, but..."
+              value={transcript}
+              onChange={(e) => setTranscript(e.target.value)}
+              rows={8}
+            />
+          </>
+        )}
 
         {error && <div className="analyze-error">⚠️ {error}</div>}
 
         <button className="analyze-submit" onClick={handleSubmit} disabled={loading}>
-          {loading ? '🧠 AI 分析中... (约10-30秒)' : '✨ 开始分析'}
+          {loading
+            ? mode === 'url'
+              ? '🎥 抓取 → 转文字 → AI 分析中... (约1-2分钟)'
+              : '🧠 AI 分析中... (约10-30秒)'
+            : '✨ 开始分析'}
         </button>
       </div>
     </div>
