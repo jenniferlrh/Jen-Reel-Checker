@@ -6,22 +6,15 @@ import ReelDetail from './components/ReelDetail'
 import SavedReels from './components/SavedReels'
 import AnalyzeForm from './components/AnalyzeForm'
 
-const INITIAL_REELS = [
-  { id: 1, creator: '@reythean_ruizhi', title: '少数人敢走的路', likes: 3, transcript: '少数人敢走的路。Most people follow the same path, but some brave souls dare to walk a different road.', hookScore: 6.5, category: '个人成长' },
-  { id: 2, creator: '@timtiah', title: 'Why most men don\'t change wallets', likes: 352, transcript: 'Ever wonder why men keep using the same wallet for years? There\'s a psychological attachment.', hookScore: 8.8, category: '心理学' },
-  { id: 3, creator: '@reythean_ruizhi', title: '今天差一点，就回不了KL了', likes: 24, transcript: '今天差一点，就回不了KL了。Close call today. Almost didn\'t make it back to Kuala Lumpur.', hookScore: 7.2, category: '旅游故事' },
-  { id: 4, creator: '@timtiah', title: 'Malaysia is considering a new law', likes: 361, transcript: 'Malaysia is considering a new law. One that could fundamentally change family dynamics.', hookScore: 8.5, category: '社会' },
-  { id: 5, creator: '@timtiah', title: 'Malaysia is opening a brand new LRT line', likes: 4400, transcript: 'Malaysia is opening a brand new LRT line this week. But infrastructure tells a bigger story.', hookScore: 9.1, category: '新闻' },
-  { id: 6, creator: '@immichellechong', title: 'Every property is a good property', likes: 4300, transcript: 'Every property is a good property. As long as you understand why you\'re buying it.', hookScore: 8.7, category: '房产' },
-  { id: 7, creator: '@timtiah', title: 'Most Malaysians think car insurance companies', likes: 3100, transcript: 'Most Malaysians think car insurance companies are making money from us. But here\'s the part no one talks about.', hookScore: 8.3, category: '金融' },
-  { id: 8, creator: '@timtiah', title: 'Your running club might be hurting alcohol companies', likes: 4100, transcript: 'Your running club might be hurting alcohol companies. Health consciousness is rising.', hookScore: 8.6, category: '健康' },
-  { id: 9, creator: '@reythean_ruizhi', title: 'Video by reythean_ruizhi', likes: 19, transcript: 'No verbal content. A visual story told through stunning cinematography.', hookScore: 7.8, category: '视觉艺术' }
-]
+const INITIAL_REELS = []
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
   const [selectedReel, setSelectedReel] = useState(null)
-  const [reels, setReels] = useState(INITIAL_REELS)
+  const [reels, setReels] = useState(() => {
+    const saved = localStorage.getItem('reels')
+    return saved ? JSON.parse(saved) : INITIAL_REELS
+  })
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [savedReelIds, setSavedReelIds] = useState(() => {
@@ -35,7 +28,11 @@ function App() {
     localStorage.setItem('savedReels', JSON.stringify(savedReelIds))
   }, [savedReelIds])
 
-  const categories = ['all', ...new Set(INITIAL_REELS.map(r => r.category))]
+  useEffect(() => {
+    localStorage.setItem('reels', JSON.stringify(reels))
+  }, [reels])
+
+  const categories = ['all', ...new Set(reels.map(r => r.category))]
 
   const filteredReels = reels.filter(reel => {
     const matchesSearch = reel.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -55,7 +52,7 @@ function App() {
 
   const handleAnalyzed = ({ creator, title, transcript, analysis, likes }) => {
     const newReel = {
-      id: Math.max(...reels.map(r => r.id)) + 1,
+      id: reels.length > 0 ? Math.max(...reels.map(r => r.id)) + 1 : 1,
       creator: creator || '@unknown',
       title: title || analysis.summary,
       likes: likes || 0,

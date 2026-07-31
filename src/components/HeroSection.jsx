@@ -80,19 +80,19 @@ export default function HeroSection({ onAnalyzeReel, reelCount, onViewSaved }) {
 
         <div className="visual-showcase">
           <div className="showcase-item" style={{ bottom: '100px', left: '0', transform: 'rotate(-5deg)' }}>
-            <div className="showcase-user">@reythean_ruizhi</div>
-            <div className="showcase-title">少数人敢走的路</div>
-            <div className="showcase-likes">♥ 3</div>
+            <div className="showcase-user">🔗 贴上链接</div>
+            <div className="showcase-title">自动抓取 reel 内容</div>
+            <div className="showcase-likes">Step 1</div>
           </div>
           <div className="showcase-item" style={{ bottom: '50px', right: '0', transform: 'rotate(3deg)' }}>
-            <div className="showcase-user">@timtiah</div>
-            <div className="showcase-title">Why men don't change wallets</div>
-            <div className="showcase-likes">♥ 352</div>
+            <div className="showcase-user">🎙️ 语音转文字</div>
+            <div className="showcase-title">AI 自动转录文字稿</div>
+            <div className="showcase-likes">Step 2</div>
           </div>
           <div className="showcase-item" style={{ bottom: '0', left: '100px', transform: 'rotate(5deg)' }}>
-            <div className="showcase-user">@immichellechong</div>
-            <div className="showcase-title">Every property is good</div>
-            <div className="showcase-likes">♥ 4.3K</div>
+            <div className="showcase-user">🧠 AI 深度分析</div>
+            <div className="showcase-title">Hook 评分 + 改进建议</div>
+            <div className="showcase-likes">Step 3</div>
           </div>
         </div>
       </div>
