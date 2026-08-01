@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './AnalyzeForm.css'
 import { apiFetch } from '../lib/api'
 
-const AREA_CHIPS = ['Bukit Jalil', 'KLCC', 'Bukit Bintang', 'TRX']
+const AREA_CHIPS = ['Bukit Jalil', 'KLCC']
 
 export default function ScriptGenerator({ onClose }) {
   const [area, setArea] = useState('')

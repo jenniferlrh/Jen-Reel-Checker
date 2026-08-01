@@ -8,7 +8,8 @@ Updated: 2026-08-01 (initial version — built from her script materials + 3 ad 
 ## 1. The Business & Funnel
 
 - Brand page: **Woii-看房咯** (property content, KL market)
-- Core funnel: FB video ad → Lead Form ("Group Webinar for all X New Projects in …") → free live group webinar (~1hr, 80–100 pax) → property sales (KLCC / Bukit Bintang / TRX / Bukit Jalil new projects)
+- Core funnel: FB video ad → Lead Form ("Group Webinar for all X New Projects in …") → free live group webinar (~1hr, 80–100 pax) → property sales
+- **Current active ads (per Jennifer 2026-08-01): ONLY two webinar lines — Bukit Jalil Webinar and KLCC Webinar.** (Bukit Bintang/TRX/Pavilion Square etc. are historical material for style reference only)
 - Presenters: Ryan (main, English), Rey (sidekick, Malay skits), Jen (VO + on-camera)
 - Markets: MSIA/SG primary; variants for JB/SG (CHI), HK/SG, AUS/INDO
 - Secondary funnels: direct project ads (Pavilion Square 中文奢华线, Braz/Hanaz brochure line)
