@@ -7,6 +7,7 @@ import SavedReels from './components/SavedReels'
 import AnalyzeForm from './components/AnalyzeForm'
 import SyncModal from './components/SyncModal'
 import AdsResearch from './components/AdsResearch'
+import ScriptGenerator from './components/ScriptGenerator'
 import AccessGate from './components/AccessGate'
 import { apiFetch } from './lib/api'
 
@@ -30,6 +31,7 @@ function App() {
   const [analyzeInitialUrl, setAnalyzeInitialUrl] = useState('')
   const [showSyncModal, setShowSyncModal] = useState(false)
   const [showAdsResearch, setShowAdsResearch] = useState(false)
+  const [showScriptGen, setShowScriptGen] = useState(false)
   const [unlocked, setUnlocked] = useState(() => !!localStorage.getItem('accessToken'))
   const [syncCode, setSyncCode] = useState(() => localStorage.getItem('syncCode') || '')
   const syncTimer = useRef(null)
@@ -181,6 +183,7 @@ function App() {
             onViewSaved={() => setCurrentPage('saved')}
             onOpenSync={() => setShowSyncModal(true)}
             onOpenAds={() => setShowAdsResearch(true)}
+            onOpenScriptGen={() => setShowScriptGen(true)}
             syncOn={!!syncCode}
           />
           <ReelsList
@@ -217,6 +220,9 @@ function App() {
       )}
       {showAdsResearch && (
         <AdsResearch onClose={() => setShowAdsResearch(false)} />
+      )}
+      {showScriptGen && (
+        <ScriptGenerator onClose={() => setShowScriptGen(false)} />
       )}
       {showSyncModal && (
         <SyncModal

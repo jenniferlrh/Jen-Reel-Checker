@@ -94,6 +94,21 @@ Structure of a full script:
 - Subtitles: not too colorful; emphasis words bolded
 - Scripted blocking: "(Turn left)", "(sit down first then start talking)", camera-man as a character in Malay skits
 
-## 8. Learnings Log (append after every ad analyzed)
+## 8. Action List (2026-08-01 snapshot — for Jennifer to execute)
+
+**加 budget（表现好）:**
+- BJ Jen VO **H3** — RM10.29/lead，全场最便宜但只花了 RM226。建议把 H4 的 budget 移给它观察 3-5 天
+- 241125 KLCC (MSIA/AUS/INDO/SG) — RM17.08/lead，可以小步加 20-30%
+
+**该关/该查（表现差）:**
+- BJ Jen VO **H4** — RM57.76/lead（超过 kill zone RM40），建议关掉
+- 300426 BJ OPEN MANUAL — RM30.96 且趋势下滑（Ads Manager 显示下滑箭头），观察 3 天没好转就关
+- KLCC - Jen VO P7+H5 Body — 有 Delivery error，进去看一下是什么问题
+
+**值得再测（历史赢家可复活）:**
+- JBA 中文线（Woii JBA Nov 04/05：RM21-22/lead）— CHI 语言有市场，BJ/KLCC 也可以出 CHI 版
+- "JV Zoe" 合作模式的 campaigns 量都大（309/315/189 leads）— 新 batch 可以继续 JV
+
+## 9. Learnings Log (append after every ad analyzed)
 
 - 2026-08-01 · Baseline built from script doc + master sheet + 3 ad accounts. Champion pattern = **listing hook + micro-market fear + numbered webinar bullets + emoji-structured copy + lead form**. BJ Jen VO H3 at RM10.29/lead is the one to watch/scale.

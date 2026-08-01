@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './ReelDetail.css'
+import { apiFetch } from '../lib/api'
 
 function buildMarkdown(reel) {
   const lines = [
@@ -20,6 +21,14 @@ function buildMarkdown(reel) {
   if (reel.insights?.length) {
     lines.push('## 分析洞察', '', ...reel.insights.map((i) => `- ${i}`), '')
   }
+  if (reel.editingInsights?.length) {
+    lines.push(
+      `## 🎬 剪辑分析${typeof reel.editingScore === 'number' ? `（${reel.editingScore}/10）` : ''}`,
+      '',
+      ...reel.editingInsights.map((e) => `- ${e}`),
+      ''
+    )
+  }
   if (reel.suggestions?.length) {
     lines.push('## 改进建议', '', ...reel.suggestions.map((s) => `- ${s}`), '')
   }
@@ -31,6 +40,27 @@ function buildMarkdown(reel) {
 
 export default function ReelDetail({ reel, onBack, isSaved, onToggleSave }) {
   const [copied, setCopied] = useState(false)
+  const [brainState, setBrainState] = useState('idle') // idle | saving | saved | error
+
+  const handleBrainSave = async () => {
+    if (brainState === 'saving' || brainState === 'saved') return
+    setBrainState('saving')
+    try {
+      const res = await apiFetch('/api/brain-learn', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          note: buildMarkdown(reel),
+          source: reel.sourceUrl || reel.creator || 'manual',
+        }),
+      })
+      if (!res.ok) throw new Error('failed')
+      setBrainState('saved')
+    } catch {
+      setBrainState('error')
+      setTimeout(() => setBrainState('idle'), 2500)
+    }
+  }
 
   const handleSave = () => {
     const blob = new Blob([buildMarkdown(reel)], { type: 'text/markdown;charset=utf-8' })
@@ -168,6 +198,15 @@ export default function ReelDetail({ reel, onBack, isSaved, onToggleSave }) {
             </button>
             <button className="btn btn-secondary" onClick={handleCopy}>
               {copied ? '✅ 已复制!' : '📋 Copy'}
+            </button>
+            <button className="btn btn-secondary" onClick={handleBrainSave}>
+              {brainState === 'saved'
+                ? '✅ 已存进 Ads Brain'
+                : brainState === 'saving'
+                  ? '🧠 存入中...'
+                  : brainState === 'error'
+                    ? '⚠️ 失败，再试'
+                    : '🧠 存进 Ads Brain'}
             </button>
             <button className="btn btn-primary" onClick={handleSave}>Save as .md</button>
           </div>

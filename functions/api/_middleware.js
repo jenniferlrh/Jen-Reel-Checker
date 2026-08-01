@@ -5,7 +5,7 @@
 //   username is still approved (not kicked).
 
 const PUBLIC_PATHS = ['/api/access-request', '/api/access-status']
-const COUNTED_PATHS = ['/api/analyze', '/api/analyze-url', '/api/ads-research']
+const COUNTED_PATHS = ['/api/analyze', '/api/analyze-url', '/api/ads-research', '/api/generate-script']
 
 export async function onRequest(context) {
   const { request, env, next } = context
