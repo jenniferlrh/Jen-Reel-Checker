@@ -210,7 +210,7 @@ export async function onRequestPost(context) {
   let audioB64 = null
   if (env.ADMIN_KEY) {
     try {
-      const fr = await fetch('http://167.71.220.201:8788/frames', {
+      const fr = await fetch('http://167.71.220.201:2052/frames', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ videoUrl, key: env.ADMIN_KEY }),
