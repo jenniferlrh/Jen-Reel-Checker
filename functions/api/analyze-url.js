@@ -73,11 +73,18 @@ const PLATFORMS = [
   },
 ]
 
+function isPageUrl(u) {
+  return /facebook\.com\/(share|reel|watch|video)|fb\.watch\/|tiktok\.com\/@|instagram\.com\/(reel|reels|p)\/|xiaohongshu\.com|xhslink\.com/i.test(u)
+}
+
+function looksLikeVideoFile(u) {
+  return /^https?:\/\//.test(u) && !isPageUrl(u) && (/\.mp4/i.test(u) || /mime_type=video/i.test(u) || /fbcdn\.net\/.*\/v\//i.test(u))
+}
+
 function deepFindVideoUrl(obj, depth = 0) {
   if (depth > 6 || obj == null) return null
   if (typeof obj === 'string') {
-    if (/^https?:\/\//.test(obj) && (/\.mp4/i.test(obj) || /mime_type=video/i.test(obj))) return obj
-    return null
+    return looksLikeVideoFile(obj) ? obj : null
   }
   if (Array.isArray(obj)) {
     for (const v of obj) {
@@ -89,12 +96,12 @@ function deepFindVideoUrl(obj, depth = 0) {
   if (typeof obj === 'object') {
     // Prefer well-known fields first
     const preferred = [
-      'videoUrl', 'video_url', 'videoUrlBackup', 'downloadUrl', 'download_url',
+      'merged_video', 'videoUrl', 'video_url', 'videoUrlBackup', 'downloadUrl', 'download_url',
       'downloadAddr', 'playAddr', 'videoDownloadUrl', 'hd_url', 'sd_url', 'url_hd', 'url_sd',
     ]
     for (const key of preferred) {
       const v = obj[key]
-      if (typeof v === 'string' && /^https?:\/\//.test(v)) return v
+      if (typeof v === 'string' && looksLikeVideoFile(v)) return v
     }
     for (const v of Object.values(obj)) {
       const found = deepFindVideoUrl(v, depth + 1)
@@ -111,12 +118,15 @@ function pickMeta(item) {
     item.author?.nickname ||
     item.author?.name ||
     item.authorName ||
+    item.general_metadata?.author ||
+    item.general_metadata?.channel_name ||
     item.nickname ||
     item.username ||
     item.uploader ||
     null
   const caption =
-    item.caption || item.text || item.desc || item.description || item.title || ''
+    item.caption || item.text || item.desc || item.description || item.title ||
+    item.general_metadata?.title || ''
   const likes =
     item.likesCount ?? item.diggCount ?? item.likes ?? item.like_count ?? item.likedCount ?? 0
   return {
