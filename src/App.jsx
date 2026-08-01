@@ -138,7 +138,9 @@ function App() {
       suggestions: analysis.suggestions,
       improvedHooks: analysis.improvedHooks,
       sourceUrl: sourceUrl || null,
-      platform: platform || null
+      platform: platform || null,
+      editingScore: analysis.editingScore ?? null,
+      editingInsights: analysis.editingInsights || null
     }
     setReels([newReel, ...reels])
     setShowAnalyzeForm(false)

@@ -119,6 +119,20 @@ export default function ReelDetail({ reel, onBack, isSaved, onToggleSave }) {
             ))}
           </div>
 
+          {reel.editingInsights && reel.editingInsights.length > 0 && (
+            <>
+              <div className="detail-section-title">🎬 剪辑分析{typeof reel.editingScore === 'number' ? `（${reel.editingScore}/10)` : ''}</div>
+              <div className="insights-list">
+                {reel.editingInsights.map((e, i) => (
+                  <div className="insight-item" key={i}>
+                    <span className="insight-icon">🎞️</span>
+                    <span>{e}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
           {reel.suggestions && reel.suggestions.length > 0 && (
             <>
               <div className="detail-section-title">💪 改进建议</div>

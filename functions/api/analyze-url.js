@@ -29,6 +29,23 @@ const ANALYSIS_SCHEMA = {
   additionalProperties: false,
 }
 
+const EDITING_PROPS = {
+  editingScore: { type: 'number', description: 'Editing/visual craft score 0-10 based on the sampled frames: pacing, cuts, subtitles/typography, visual hook' },
+  editingInsights: {
+    type: 'array',
+    items: { type: 'string' },
+    description: '3-5 observations about the editing style and why it helps or hurts retention, in Chinese',
+  },
+}
+
+function schemaWithEditing() {
+  return {
+    ...ANALYSIS_SCHEMA,
+    properties: { ...ANALYSIS_SCHEMA.properties, ...EDITING_PROPS },
+    required: [...ANALYSIS_SCHEMA.required, 'editingScore', 'editingInsights'],
+  }
+}
+
 const PLATFORMS = [
   {
     name: 'instagram',
@@ -52,7 +69,7 @@ const PLATFORMS = [
     name: 'facebook',
     match: (u) => /facebook\.com\//.test(u) || /fb\.watch\//.test(u),
     actor: 'solid-scraper~facebook-video-downloader',
-    input: (u) => ({ video_urls: [u], requested_resolution: 'SD' }),
+    input: (u) => ({ video_urls: [{ url: u }], requested_resolution: '480p' }),
   },
 ]
 
@@ -203,6 +220,26 @@ export async function onRequestPost(context) {
     transcript = '(这条视频没有语音内容，仅有画面/音乐)'
   }
 
+  // ---- Step 2.5: Extract frames for editing analysis (best effort) ----
+  let frames = []
+  let videoDuration = null
+  if (env.ADMIN_KEY) {
+    try {
+      const fr = await fetch('http://167.71.220.201:8788/frames', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ videoUrl, key: env.ADMIN_KEY }),
+      })
+      if (fr.ok) {
+        const fd = await fr.json()
+        frames = Array.isArray(fd.frames) ? fd.frames.slice(0, 8) : []
+        videoDuration = fd.duration || null
+      }
+    } catch {
+      // frames are optional; continue without editing analysis
+    }
+  }
+
   // ---- Step 3: Analyze with Claude ----
   const isAds = body.mode === 'ads'
   const prompt = isAds
@@ -229,6 +266,17 @@ ${transcript}
 
 评分标准：hook 前3秒是否抓人（悬念、冲突、反常识、数字）、叙事节奏、是否有明确的价值点或情绪点、结尾是否有行动引导。用中文输出分析。`
 
+  const hasFrames = frames.length > 0
+  const editingNote = hasFrames
+    ? `\n\n另外附上从视频中均匀抽取的 ${frames.length} 张画面帧${videoDuration ? `（视频总长约 ${videoDuration} 秒）` : ''}。请根据这些帧分析剪辑与视觉层面：节奏与镜头变化频率、字幕/排版风格、视觉 hook（首帧是否抓人）、画面质感，输出 editingScore (0-10) 和 editingInsights（3-5条，讲剪辑如何帮助或拖累留人）。`
+    : ''
+  const content = hasFrames
+    ? [
+        ...frames.map((b64) => ({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: b64 } })),
+        { type: 'text', text: prompt + editingNote },
+      ]
+    : prompt
+
   const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -239,8 +287,8 @@ ${transcript}
     body: JSON.stringify({
       model: 'claude-opus-5',
       max_tokens: 4096,
-      output_config: { format: { type: 'json_schema', schema: ANALYSIS_SCHEMA } },
-      messages: [{ role: 'user', content: prompt }],
+      output_config: { format: { type: 'json_schema', schema: hasFrames ? schemaWithEditing() : ANALYSIS_SCHEMA } },
+      messages: [{ role: 'user', content }],
     }),
   })
 
