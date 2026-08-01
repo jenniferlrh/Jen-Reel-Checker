@@ -48,9 +48,17 @@ export async function onRequestPost(context) {
     return jsonResponse({ error: 'Invalid JSON body' }, 400)
   }
 
-  const url = (body.url || '').trim()
+  let url = (body.url || '').trim()
+  if (!url) {
+    return jsonResponse({ error: '请提供品牌名或它的 Facebook 主页链接' }, 400)
+  }
   if (!/facebook\.com\//.test(url)) {
-    return jsonResponse({ error: '请提供品牌的 Facebook 主页链接，例如 https://www.facebook.com/nike' }, 400)
+    // Not a URL — treat as a brand name / page handle, e.g. "nike" -> facebook.com/nike
+    const handle = url.replace(/^@/, '').replace(/\s+/g, '')
+    if (!/^[\w.\-]{2,60}$/.test(handle)) {
+      return jsonResponse({ error: '看不懂这个输入。贴品牌的 FB 主页链接，或它的主页名（例如 nike）' }, 400)
+    }
+    url = `https://www.facebook.com/${handle}`
   }
 
   // ---- Step 1: Scrape the brand's active ads from the Facebook Ad Library ----

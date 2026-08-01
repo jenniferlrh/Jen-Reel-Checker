@@ -84,12 +84,12 @@ export default function AdsResearch({ onClose }) {
         {!report && (
           <>
             <p className="analyze-hint">
-              贴上品牌的 Facebook 主页链接，自动抓取它正在投放的广告，AI 拆解它的打法（约 1-2 分钟）
+              贴品牌的 FB 主页链接，或直接打它的主页名（例如 nike）。自动抓取它正在投放的广告，AI 拆解打法（约 1-2 分钟）
             </p>
             <input
               className="analyze-url-input"
               type="text"
-              placeholder="https://www.facebook.com/品牌主页"
+              placeholder="品牌主页名 或 https://www.facebook.com/xxx"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
