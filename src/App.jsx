@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import HeroSection from './components/HeroSection'
 import ReelsList from './components/ReelsList'
 import ReelDetail from './components/ReelDetail'
 import SavedReels from './components/SavedReels'
 import AnalyzeForm from './components/AnalyzeForm'
+import SyncModal from './components/SyncModal'
 
 const INITIAL_REELS = []
 
@@ -24,6 +25,10 @@ function App() {
   const [sortBy, setSortBy] = useState('latest')
   const [showAnalyzeForm, setShowAnalyzeForm] = useState(false)
   const [analyzeInitialUrl, setAnalyzeInitialUrl] = useState('')
+  const [showSyncModal, setShowSyncModal] = useState(false)
+  const [syncCode, setSyncCode] = useState(() => localStorage.getItem('syncCode') || '')
+  const syncTimer = useRef(null)
+  const syncReady = useRef(false)
 
   useEffect(() => {
     localStorage.setItem('savedReels', JSON.stringify(savedReelIds))
@@ -32,6 +37,68 @@ function App() {
   useEffect(() => {
     localStorage.setItem('reels', JSON.stringify(reels))
   }, [reels])
+
+  // ---- Cloud sync ----
+  const pullCloud = async (code, localReels, localSaved) => {
+    const res = await fetch(`/api/library?code=${encodeURIComponent(code)}`)
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || `同步失败 (${res.status})`)
+    if (data.data && Array.isArray(data.data.reels) && data.data.reels.length > 0) {
+      // Cloud has data: merge cloud + local (dedupe by transcript+creator)
+      const cloud = data.data.reels
+      const seen = new Set(cloud.map(r => `${r.creator}|${(r.transcript || '').slice(0, 80)}`))
+      const merged = [
+        ...cloud,
+        ...localReels.filter(r => !seen.has(`${r.creator}|${(r.transcript || '').slice(0, 80)}`)),
+      ].map((r, i) => ({ ...r, id: i + 1 }))
+      setReels(merged)
+      setSavedReelIds(data.data.savedReelIds || localSaved)
+      return merged
+    }
+    // Cloud empty: push local up
+    await fetch('/api/library', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ code, reels: localReels, savedReelIds: localSaved }),
+    })
+    return localReels
+  }
+
+  useEffect(() => {
+    if (!syncCode) return
+    pullCloud(syncCode, reels, savedReelIds)
+      .then(() => { syncReady.current = true })
+      .catch(() => { syncReady.current = true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (!syncCode || !syncReady.current) return
+    clearTimeout(syncTimer.current)
+    syncTimer.current = setTimeout(() => {
+      fetch('/api/library', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ code: syncCode, reels, savedReelIds }),
+      }).catch(() => {})
+    }, 1200)
+    return () => clearTimeout(syncTimer.current)
+  }, [reels, savedReelIds, syncCode])
+
+  const handleConnectSync = async (code) => {
+    await pullCloud(code, reels, savedReelIds)
+    localStorage.setItem('syncCode', code)
+    setSyncCode(code)
+    syncReady.current = true
+    setShowSyncModal(false)
+  }
+
+  const handleDisconnectSync = () => {
+    localStorage.removeItem('syncCode')
+    setSyncCode('')
+    syncReady.current = false
+    setShowSyncModal(false)
+  }
 
   const categories = ['all', ...new Set(reels.map(r => r.category))]
 
@@ -95,7 +162,13 @@ function App() {
     <div className="app">
       {currentPage === 'home' && (
         <>
-          <HeroSection onAnalyzeReel={handleAnalyzeReel} reelCount={reels.length} onViewSaved={() => setCurrentPage('saved')} />
+          <HeroSection
+            onAnalyzeReel={handleAnalyzeReel}
+            reelCount={reels.length}
+            onViewSaved={() => setCurrentPage('saved')}
+            onOpenSync={() => setShowSyncModal(true)}
+            syncOn={!!syncCode}
+          />
           <ReelsList
             reels={filteredReels}
             onSelectReel={handleViewDetail}
@@ -126,6 +199,14 @@ function App() {
           initialUrl={analyzeInitialUrl}
           onClose={() => setShowAnalyzeForm(false)}
           onAnalyzed={handleAnalyzed}
+        />
+      )}
+      {showSyncModal && (
+        <SyncModal
+          currentCode={syncCode}
+          onClose={() => setShowSyncModal(false)}
+          onConnect={handleConnectSync}
+          onDisconnect={handleDisconnectSync}
         />
       )}
       {currentPage === 'saved' && (

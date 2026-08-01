@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './HeroSection.css'
 
-export default function HeroSection({ onAnalyzeReel, reelCount, onViewSaved }) {
+export default function HeroSection({ onAnalyzeReel, reelCount, onViewSaved, onOpenSync, syncOn }) {
   const [inputValue, setInputValue] = useState('')
 
   const handleAnalyze = () => {
@@ -30,6 +30,7 @@ export default function HeroSection({ onAnalyzeReel, reelCount, onViewSaved }) {
         <div className="nav-links">
           <a href="#analyze" onClick={(e) => { e.preventDefault(); onAnalyzeReel('') }}>Analyze</a>
           <button onClick={onViewSaved} className="nav-saved-btn">💾 Saved</button>
+          <button onClick={onOpenSync} className="nav-saved-btn">{syncOn ? '☁️ 已同步' : '☁️ 同步'}</button>
         </div>
       </div>
 
