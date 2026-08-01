@@ -185,20 +185,51 @@ export async function onRequestPost(context) {
     return jsonResponse({ error: '这条帖子里找不到视频（可能是图片帖），无法转录。' }, 422)
   }
 
-  // ---- Step 2: Download video and transcribe with OpenAI Whisper ----
+  // ---- Step 2: Media service (frames + normalized mp3 audio) on the droplet ----
+  let frames = []
+  let videoDuration = null
+  let audioB64 = null
+  if (env.ADMIN_KEY) {
+    try {
+      const fr = await fetch('http://167.71.220.201:8788/frames', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ videoUrl, key: env.ADMIN_KEY }),
+      })
+      if (fr.ok) {
+        const fd = await fr.json()
+        frames = Array.isArray(fd.frames) ? fd.frames.slice(0, 8) : []
+        videoDuration = fd.duration || null
+        audioB64 = fd.audio || null
+      }
+    } catch {
+      // media service is best-effort; fall back to direct download below
+    }
+  }
+
+  // ---- Step 3: Transcribe with OpenAI Whisper ----
   let transcript
   try {
-    const videoRes = await fetch(videoUrl)
-    if (!videoRes.ok) {
-      return jsonResponse({ error: `下载视频失败 (${videoRes.status})` }, 502)
-    }
-    const videoBlob = await videoRes.blob()
-    if (videoBlob.size > 24 * 1024 * 1024) {
-      return jsonResponse({ error: '视频超过 24MB，太长了无法转录（先支持短视频）。' }, 422)
+    let audioBlob
+    let audioName
+    if (audioB64) {
+      const bytes = Uint8Array.from(atob(audioB64), (c) => c.charCodeAt(0))
+      audioBlob = new Blob([bytes], { type: 'audio/mpeg' })
+      audioName = 'audio.mp3'
+    } else {
+      const videoRes = await fetch(videoUrl)
+      if (!videoRes.ok) {
+        return jsonResponse({ error: `下载视频失败 (${videoRes.status})` }, 502)
+      }
+      audioBlob = await videoRes.blob()
+      if (audioBlob.size > 24 * 1024 * 1024) {
+        return jsonResponse({ error: '视频超过 24MB，太长了无法转录（先支持短视频）。' }, 422)
+      }
+      audioName = 'video.mp4'
     }
 
     const form = new FormData()
-    form.append('file', videoBlob, 'video.mp4')
+    form.append('file', audioBlob, audioName)
     form.append('model', 'whisper-1')
 
     const whisperRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {
@@ -218,26 +249,6 @@ export async function onRequestPost(context) {
 
   if (!transcript) {
     transcript = '(这条视频没有语音内容，仅有画面/音乐)'
-  }
-
-  // ---- Step 2.5: Extract frames for editing analysis (best effort) ----
-  let frames = []
-  let videoDuration = null
-  if (env.ADMIN_KEY) {
-    try {
-      const fr = await fetch('http://167.71.220.201:8788/frames', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ videoUrl, key: env.ADMIN_KEY }),
-      })
-      if (fr.ok) {
-        const fd = await fr.json()
-        frames = Array.isArray(fd.frames) ? fd.frames.slice(0, 8) : []
-        videoDuration = fd.duration || null
-      }
-    } catch {
-      // frames are optional; continue without editing analysis
-    }
   }
 
   // ---- Step 3: Analyze with Claude ----
