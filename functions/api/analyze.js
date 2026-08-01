@@ -50,7 +50,17 @@ export async function onRequestPost(context) {
   const title = (body.title || '').trim()
   const creator = (body.creator || '').trim()
 
-  const prompt = `你是 Instagram Reel 内容策略专家。分析以下 reel 的文字稿，评估它的 hook（开头吸引力）、内容结构和传播潜力。
+  const isAds = body.mode === 'ads'
+  const prompt = isAds
+    ? `你是广告投放与转化专家。以下是一条广告视频的文字稿，用广告标准拆解它。
+
+${creator ? `创作者/品牌: ${creator}\n` : ''}${title ? `标题: ${title}\n` : ''}文字稿:
+"""
+${transcript}
+"""
+
+评分标准（广告专用）：前3秒 hook 是否让目标受众停下、痛点/欲望是否明确、卖点与差异化是否清晰、信任元素（证据/权威/社会认同）、CTA 强度与行动门槛、落地引导是否顺畅。insights 讲这条广告为什么有效/无效，suggestions 给具体投放和文案优化建议，improvedHooks 重写更强的广告开头。用中文输出。`
+    : `你是 Instagram Reel 内容策略专家。分析以下 reel 的文字稿，评估它的 hook（开头吸引力）、内容结构和传播潜力。
 
 ${creator ? `创作者: ${creator}\n` : ''}${title ? `标题: ${title}\n` : ''}文字稿:
 """

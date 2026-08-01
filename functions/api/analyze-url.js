@@ -204,7 +204,20 @@ export async function onRequestPost(context) {
   }
 
   // ---- Step 3: Analyze with Claude ----
-  const prompt = `你是短视频内容策略专家（Instagram Reels / TikTok / 小红书 / Facebook Reels）。分析以下视频的文字稿，评估它的 hook（开头吸引力）、内容结构和传播潜力。
+  const isAds = body.mode === 'ads'
+  const prompt = isAds
+    ? `你是广告投放与转化专家。以下是一条${platform.name}广告视频的文字稿，用广告标准拆解它。
+
+平台: ${platform.name}
+创作者/品牌: ${meta.creator}
+${meta.caption ? `广告文案: ${meta.caption}\n` : ''}点赞数: ${meta.likes}
+文字稿:
+"""
+${transcript}
+"""
+
+评分标准（广告专用）：前3秒 hook 是否让目标受众停下、痛点/欲望是否明确、卖点与差异化是否清晰、信任元素（证据/权威/社会认同）、CTA 强度与行动门槛、落地引导是否顺畅。insights 讲这条广告为什么有效/无效，suggestions 给具体投放和文案优化建议，improvedHooks 重写更强的广告开头。用中文输出。`
+    : `你是短视频内容策略专家（Instagram Reels / TikTok / 小红书 / Facebook Reels）。分析以下视频的文字稿，评估它的 hook（开头吸引力）、内容结构和传播潜力。
 
 平台: ${platform.name}
 创作者: ${meta.creator}

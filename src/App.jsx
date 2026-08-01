@@ -6,6 +6,9 @@ import ReelDetail from './components/ReelDetail'
 import SavedReels from './components/SavedReels'
 import AnalyzeForm from './components/AnalyzeForm'
 import SyncModal from './components/SyncModal'
+import AdsResearch from './components/AdsResearch'
+import LockScreen from './components/LockScreen'
+import { apiFetch } from './lib/api'
 
 const INITIAL_REELS = []
 
@@ -26,6 +29,8 @@ function App() {
   const [showAnalyzeForm, setShowAnalyzeForm] = useState(false)
   const [analyzeInitialUrl, setAnalyzeInitialUrl] = useState('')
   const [showSyncModal, setShowSyncModal] = useState(false)
+  const [showAdsResearch, setShowAdsResearch] = useState(false)
+  const [unlocked, setUnlocked] = useState(() => !!localStorage.getItem('siteKey'))
   const [syncCode, setSyncCode] = useState(() => localStorage.getItem('syncCode') || '')
   const syncTimer = useRef(null)
   const syncReady = useRef(false)
@@ -40,7 +45,7 @@ function App() {
 
   // ---- Cloud sync ----
   const pullCloud = async (code, localReels, localSaved) => {
-    const res = await fetch(`/api/library?code=${encodeURIComponent(code)}`)
+    const res = await apiFetch(`/api/library?code=${encodeURIComponent(code)}`)
     const data = await res.json()
     if (!res.ok) throw new Error(data.error || `同步失败 (${res.status})`)
     if (data.data && Array.isArray(data.data.reels) && data.data.reels.length > 0) {
@@ -56,7 +61,7 @@ function App() {
       return merged
     }
     // Cloud empty: push local up
-    await fetch('/api/library', {
+    await apiFetch('/api/library', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ code, reels: localReels, savedReelIds: localSaved }),
@@ -76,7 +81,7 @@ function App() {
     if (!syncCode || !syncReady.current) return
     clearTimeout(syncTimer.current)
     syncTimer.current = setTimeout(() => {
-      fetch('/api/library', {
+      apiFetch('/api/library', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ code: syncCode, reels, savedReelIds }),
@@ -160,6 +165,10 @@ function App() {
   const savedReels = reels.filter(r => savedReelIds.includes(r.id))
   const isSaved = selectedReel ? savedReelIds.includes(selectedReel.id) : false
 
+  if (!unlocked) {
+    return <LockScreen onUnlock={() => setUnlocked(true)} />
+  }
+
   return (
     <div className="app">
       {currentPage === 'home' && (
@@ -169,6 +178,7 @@ function App() {
             reelCount={reels.length}
             onViewSaved={() => setCurrentPage('saved')}
             onOpenSync={() => setShowSyncModal(true)}
+            onOpenAds={() => setShowAdsResearch(true)}
             syncOn={!!syncCode}
           />
           <ReelsList
@@ -202,6 +212,9 @@ function App() {
           onClose={() => setShowAnalyzeForm(false)}
           onAnalyzed={handleAnalyzed}
         />
+      )}
+      {showAdsResearch && (
+        <AdsResearch onClose={() => setShowAdsResearch(false)} />
       )}
       {showSyncModal && (
         <SyncModal

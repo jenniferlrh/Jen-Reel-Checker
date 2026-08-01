@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import './AnalyzeForm.css'
+import { apiFetch } from '../lib/api'
 
 export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
   const [mode, setMode] = useState('url')
+  const [analysisType, setAnalysisType] = useState('content')
   const [url, setUrl] = useState(initialUrl)
   const [creator, setCreator] = useState('')
   const [title, setTitle] = useState('')
@@ -19,10 +21,10 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
       }
       setLoading(true)
       try {
-        const res = await fetch('/api/analyze-url', {
+        const res = await apiFetch('/api/analyze-url', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ url }),
+          body: JSON.stringify({ url, mode: analysisType === 'ads' ? 'ads' : 'content' }),
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error || `分析失败 (${res.status})`)
@@ -47,10 +49,10 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
       }
       setLoading(true)
       try {
-        const res = await fetch('/api/analyze', {
+        const res = await apiFetch('/api/analyze', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ creator, title, transcript }),
+          body: JSON.stringify({ creator, title, transcript, mode: analysisType === 'ads' ? 'ads' : 'content' }),
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error || `分析失败 (${res.status})`)
@@ -67,7 +69,22 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
     <div className="analyze-overlay" onClick={onClose}>
       <div className="analyze-modal" onClick={(e) => e.stopPropagation()}>
         <button className="analyze-close" onClick={onClose}>✕</button>
-        <h2>🎬 AI 分析 Reel</h2>
+        <h2>🎬 AI 分析视频</h2>
+
+        <div className="analyze-tabs analyze-type-tabs">
+          <button
+            className={analysisType === 'content' ? 'tab active' : 'tab'}
+            onClick={() => setAnalysisType('content')}
+          >
+            📈 内容分析
+          </button>
+          <button
+            className={analysisType === 'ads' ? 'tab active' : 'tab'}
+            onClick={() => setAnalysisType('ads')}
+          >
+            📢 广告拆解
+          </button>
+        </div>
 
         <div className="analyze-tabs">
           <button
