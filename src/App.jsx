@@ -23,6 +23,7 @@ function App() {
   })
   const [sortBy, setSortBy] = useState('latest')
   const [showAnalyzeForm, setShowAnalyzeForm] = useState(false)
+  const [analyzeInitialUrl, setAnalyzeInitialUrl] = useState('')
 
   useEffect(() => {
     localStorage.setItem('savedReels', JSON.stringify(savedReelIds))
@@ -46,7 +47,8 @@ function App() {
     return 0
   })
 
-  const handleAnalyzeReel = () => {
+  const handleAnalyzeReel = (url) => {
+    setAnalyzeInitialUrl(typeof url === 'string' ? url : '')
     setShowAnalyzeForm(true)
   }
 
@@ -121,6 +123,7 @@ function App() {
       )}
       {showAnalyzeForm && (
         <AnalyzeForm
+          initialUrl={analyzeInitialUrl}
           onClose={() => setShowAnalyzeForm(false)}
           onAnalyzed={handleAnalyzed}
         />

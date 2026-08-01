@@ -38,21 +38,20 @@ export default function HeroSection({ onAnalyzeReel, reelCount, onViewSaved }) {
           <div className="content-label">🎥 Reel Studio</div>
           <div className="content-title">Let's Analyze<br />Trending Content</div>
           <div className="content-desc">
-            Discover what makes Instagram reels go viral. AI-powered analysis with real-time insights and actionable data for creators.
+            一条链接，自动抓取 + 转文字 + AI 深度分析。支持 Instagram、TikTok、小红书、Facebook。
           </div>
-          <button className="cta-button" onClick={handleAnalyze}>Get Started</button>
 
           <div className="input-section">
-            <label className="input-label">ANALYZE A REEL</label>
+            <label className="input-label">ANALYZE A VIDEO</label>
             <div className="input-wrapper">
               <input
                 type="text"
-                placeholder="instagram.com/reel/... or @handle"
+                placeholder="贴上 IG / TikTok / 小红书 / FB 视频链接"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
               />
-              <button onClick={handleAnalyze}>Analyze</button>
+              <button onClick={handleAnalyze}>✨ Analyze</button>
             </div>
           </div>
 

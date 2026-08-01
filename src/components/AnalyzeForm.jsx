@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import './AnalyzeForm.css'
 
-export default function AnalyzeForm({ onClose, onAnalyzed }) {
+export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
   const [mode, setMode] = useState('url')
-  const [url, setUrl] = useState('')
+  const [url, setUrl] = useState(initialUrl)
   const [creator, setCreator] = useState('')
   const [title, setTitle] = useState('')
   const [transcript, setTranscript] = useState('')
