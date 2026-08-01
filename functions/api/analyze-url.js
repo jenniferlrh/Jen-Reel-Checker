@@ -208,6 +208,7 @@ export async function onRequestPost(context) {
   let frames = []
   let videoDuration = null
   let audioB64 = null
+  let framesError = null
   if (env.ADMIN_KEY) {
     try {
       const fr = await fetch('http://167.71.220.201:2052/frames', {
@@ -220,10 +221,22 @@ export async function onRequestPost(context) {
         frames = Array.isArray(fd.frames) ? fd.frames.slice(0, 8) : []
         videoDuration = fd.duration || null
         audioB64 = fd.audio || null
+      } else {
+        framesError = `frames service HTTP ${fr.status}`
       }
-    } catch {
+    } catch (e) {
       // media service is best-effort; fall back to direct download below
+      framesError = String(e && e.message ? e.message : e)
     }
+  }
+  if (body.debugFrames) {
+    return jsonResponse({
+      debugFrames: true,
+      frames: frames.length,
+      duration: videoDuration,
+      audio: !!audioB64,
+      framesError,
+    })
   }
 
   // ---- Step 3: Transcribe with OpenAI Whisper ----
