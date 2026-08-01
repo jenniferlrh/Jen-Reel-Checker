@@ -211,7 +211,9 @@ export async function onRequestPost(context) {
   let framesError = null
   if (env.ADMIN_KEY) {
     try {
-      const fr = await fetch('http://167.71.220.201:2052/frames', {
+      // Cloudflare Workers refuse to fetch bare IPs (error 1003), so use the
+      // sslip.io wildcard DNS name that resolves to the droplet's IP.
+      const fr = await fetch('http://167-71-220-201.sslip.io:2052/frames', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ videoUrl, key: env.ADMIN_KEY }),
