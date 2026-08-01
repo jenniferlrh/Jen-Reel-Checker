@@ -1,38 +1,54 @@
+import { useState } from 'react'
 import './ReelDetail.css'
 
+function buildMarkdown(reel) {
+  const lines = [
+    `# ${reel.title}`,
+    '',
+    `- 创作者: ${reel.creator}`,
+    `- 点赞: ${reel.likes}`,
+    `- Hook 评分: ${reel.hookScore}/10`,
+    `- 分类: ${reel.category}`,
+  ]
+  if (reel.sourceUrl) {
+    lines.push(`- 原视频: ${reel.sourceUrl}`)
+  }
+  lines.push('', '## 文字稿', '', reel.transcript || '(无)', '')
+  if (reel.summary) {
+    lines.push('## 总结', '', reel.summary, '')
+  }
+  if (reel.insights?.length) {
+    lines.push('## 分析洞察', '', ...reel.insights.map((i) => `- ${i}`), '')
+  }
+  if (reel.suggestions?.length) {
+    lines.push('## 改进建议', '', ...reel.suggestions.map((s) => `- ${s}`), '')
+  }
+  if (reel.improvedHooks?.length) {
+    lines.push('## 更好的开头 Hook', '', ...reel.improvedHooks.map((h) => `- "${h}"`), '')
+  }
+  return lines.join('\n')
+}
+
 export default function ReelDetail({ reel, onBack, isSaved, onToggleSave }) {
+  const [copied, setCopied] = useState(false)
+
   const handleSave = () => {
-    const lines = [
-      `# ${reel.title}`,
-      '',
-      `- 创作者: ${reel.creator}`,
-      `- 点赞: ${reel.likes}`,
-      `- Hook 评分: ${reel.hookScore}/10`,
-      `- 分类: ${reel.category}`,
-      '',
-      '## 文字稿',
-      '',
-      reel.transcript || '(无)',
-      '',
-    ]
-    if (reel.summary) {
-      lines.push('## 总结', '', reel.summary, '')
-    }
-    if (reel.insights?.length) {
-      lines.push('## 分析洞察', '', ...reel.insights.map((i) => `- ${i}`), '')
-    }
-    if (reel.suggestions?.length) {
-      lines.push('## 改进建议', '', ...reel.suggestions.map((s) => `- ${s}`), '')
-    }
-    if (reel.improvedHooks?.length) {
-      lines.push('## 更好的开头 Hook', '', ...reel.improvedHooks.map((h) => `- "${h}"`), '')
-    }
-    const blob = new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' })
+    const blob = new Blob([buildMarkdown(reel)], { type: 'text/markdown;charset=utf-8' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
     a.download = `${(reel.creator || 'reel').replace(/[@/\\:*?"<>|]/g, '')}-analysis.md`
     a.click()
     URL.revokeObjectURL(a.href)
+  }
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(buildMarkdown(reel))
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      alert('复制失败，请用 Save as .md 下载')
+    }
   }
 
   return (
@@ -135,6 +151,9 @@ export default function ReelDetail({ reel, onBack, isSaved, onToggleSave }) {
             <button className="btn btn-secondary" onClick={onBack}>Close</button>
             <button className="btn btn-save" onClick={() => onToggleSave()}>
               {isSaved ? '❤️ Saved' : '🤍 Save'}
+            </button>
+            <button className="btn btn-secondary" onClick={handleCopy}>
+              {copied ? '✅ 已复制!' : '📋 Copy'}
             </button>
             <button className="btn btn-primary" onClick={handleSave}>Save as .md</button>
           </div>
