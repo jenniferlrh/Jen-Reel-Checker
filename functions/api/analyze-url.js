@@ -222,7 +222,8 @@ export async function onRequestPost(context) {
         videoDuration = fd.duration || null
         audioB64 = fd.audio || null
       } else {
-        framesError = `frames service HTTP ${fr.status}`
+        const errBody = await fr.text().catch(() => '')
+        framesError = `frames service HTTP ${fr.status}: ${errBody.slice(0, 300)}`
       }
     } catch (e) {
       // media service is best-effort; fall back to direct download below
