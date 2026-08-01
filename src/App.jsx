@@ -7,7 +7,7 @@ import SavedReels from './components/SavedReels'
 import AnalyzeForm from './components/AnalyzeForm'
 import SyncModal from './components/SyncModal'
 import AdsResearch from './components/AdsResearch'
-import LockScreen from './components/LockScreen'
+import AccessGate from './components/AccessGate'
 import { apiFetch } from './lib/api'
 
 const INITIAL_REELS = []
@@ -30,7 +30,7 @@ function App() {
   const [analyzeInitialUrl, setAnalyzeInitialUrl] = useState('')
   const [showSyncModal, setShowSyncModal] = useState(false)
   const [showAdsResearch, setShowAdsResearch] = useState(false)
-  const [unlocked, setUnlocked] = useState(() => !!localStorage.getItem('siteKey'))
+  const [unlocked, setUnlocked] = useState(() => !!localStorage.getItem('accessToken'))
   const [syncCode, setSyncCode] = useState(() => localStorage.getItem('syncCode') || '')
   const syncTimer = useRef(null)
   const syncReady = useRef(false)
@@ -166,7 +166,7 @@ function App() {
   const isSaved = selectedReel ? savedReelIds.includes(selectedReel.id) : false
 
   if (!unlocked) {
-    return <LockScreen onUnlock={() => setUnlocked(true)} />
+    return <AccessGate onUnlock={() => setUnlocked(true)} />
   }
 
   return (
