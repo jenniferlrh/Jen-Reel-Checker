@@ -119,7 +119,7 @@ function App() {
     setShowAnalyzeForm(true)
   }
 
-  const handleAnalyzed = ({ creator, title, transcript, analysis, likes }) => {
+  const handleAnalyzed = ({ creator, title, transcript, analysis, likes, sourceUrl, platform }) => {
     const newReel = {
       id: reels.length > 0 ? Math.max(...reels.map(r => r.id)) + 1 : 1,
       creator: creator || '@unknown',
@@ -131,7 +131,9 @@ function App() {
       summary: analysis.summary,
       insights: analysis.insights,
       suggestions: analysis.suggestions,
-      improvedHooks: analysis.improvedHooks
+      improvedHooks: analysis.improvedHooks,
+      sourceUrl: sourceUrl || null,
+      platform: platform || null
     }
     setReels([newReel, ...reels])
     setShowAnalyzeForm(false)

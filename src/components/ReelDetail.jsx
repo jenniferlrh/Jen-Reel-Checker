@@ -49,7 +49,18 @@ export default function ReelDetail({ reel, onBack, isSaved, onToggleSave }) {
             </div>
           </div>
 
-          <div className="detail-video">▶ Video preview</div>
+          {reel.sourceUrl ? (
+            <a
+              className="detail-video detail-video-link"
+              href={reel.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ▶ 观看原视频{reel.platform ? `（${reel.platform}）` : ''}
+            </a>
+          ) : (
+            <div className="detail-video">🎬 手动分析（无视频链接）</div>
+          )}
 
           <div className="detail-title">{reel.title}</div>
 

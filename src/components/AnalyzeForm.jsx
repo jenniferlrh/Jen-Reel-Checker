@@ -32,6 +32,8 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
           likes: data.meta.likes,
           transcript: data.transcript,
           analysis: data.analysis,
+          sourceUrl: data.meta.url,
+          platform: data.meta.platform,
         })
       } catch (err) {
         setError(err.message)
