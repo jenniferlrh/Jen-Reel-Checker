@@ -116,6 +116,18 @@ Last-7d snapshot — Jen's Prop: 69 leads @ RM25.31 · WoiiKanFangLor BJ webinar
 
 **原则:** 每次改动后等3天再判断；一次别改太多个；加budget每次≤30%。
 
+## 8b. Unshot BJ Draft Scripts (her sheet 1hnMFI4dn4Tqu1taEw4sF2A9t0plRvS0KnOF6r0EcTOc, reviewed 2026-08-01)
+
+Jennifer wrote a new BJ heading batch (not filmed yet). Assessment — perfect timing since current BJ ads are fatiguing:
+- ⭐ **"Missed Mont Kiara 10 years ago? Or Bandar Sunway 15 years ago? Bukit Jalil… might be your next opportunity"** — NEW hook type for her rotation: **regret/FOMO**. Priority to shoot. Note: trim the amenity list (LRT/golf/universities/Pavilion mall) into B-roll captions, don't narrate it all.
+- ⭐ **"One concert at Bukit Jalil and the whole area jams up for hours…"** — concert-jam local news-jack, highly relatable. Shoot & schedule around concert dates.
+- 👍 **"You ask agents, but they don't give you complete information, and they keep calling to push their own projects"** — agent spam-call pain point, fresher variant of agent-conspiracy.
+- ❌ "The roads in Bukit Jalil are jammed almost every day" — overlaps with concert version; skip.
+- Copy tweaks: "rental can different up to double x2" → "same layout, 5 minutes apart, rental double". KEEP the line "**This is a real group webinar, not 1-1 zoom and you don't need to commit anything**" — removes the fear-of-being-sold objection; consider adding it to ALL future bodies.
+- Shared body bullets in her draft (undervalued BJ / project comparison with risks & positioning / real case studies + live data / 80 slots) are solid — add numbers (8 projects, 5 zones) for punch.
+
+New hook types unlocked for the playbook: **Regret/FOMO** ("Missed Mont Kiara 10 years ago?") and **Agent spam-calls** — usable for KLCC line too (e.g. "Missed KLCC in 2015?").
+
 ## 9. Learning Rules (how to use other people's ads)
 
 - Jennifer feeds in OTHER people's ads for study — those can be ANY type (product, course, service, e-com, not necessarily webinar or property).
