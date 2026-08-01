@@ -9,6 +9,8 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
   const [creator, setCreator] = useState('')
   const [title, setTitle] = useState('')
   const [transcript, setTranscript] = useState('')
+  const [imageFile, setImageFile] = useState(null)
+  const [imagePreview, setImagePreview] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -36,6 +38,39 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
           analysis: data.analysis,
           sourceUrl: data.meta.url,
           platform: data.meta.platform,
+        })
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    } else if (mode === 'image') {
+      if (!imageFile) {
+        setError('请选择一张截图')
+        return
+      }
+      setLoading(true)
+      try {
+        const dataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(reader.result)
+          reader.onerror = reject
+          reader.readAsDataURL(imageFile)
+        })
+        const [meta, b64] = String(dataUrl).split(',')
+        const mediaType = (meta.match(/data:(.*?);/) || [])[1] || 'image/png'
+        const res = await apiFetch('/api/analyze-image', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ imageBase64: b64, mediaType, mode: analysisType === 'ads' ? 'ads' : 'content' }),
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error || `分析失败 (${res.status})`)
+        onAnalyzed({
+          creator: data.analysis.creator || '@unknown',
+          title: data.analysis.summary,
+          transcript: data.analysis.visibleText || '(截图分析)',
+          analysis: data.analysis,
         })
       } catch (err) {
         setError(err.message)
@@ -97,7 +132,13 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
             className={mode === 'transcript' ? 'tab active' : 'tab'}
             onClick={() => setMode('transcript')}
           >
-            📝 贴文字稿
+            📝 文字稿
+          </button>
+          <button
+            className={mode === 'image' ? 'tab active' : 'tab'}
+            onClick={() => setMode('image')}
+          >
+            📸 截图
           </button>
         </div>
 
@@ -111,6 +152,27 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
+          </>
+        ) : mode === 'image' ? (
+          <>
+            <p className="analyze-hint">看到广告/帖子但找不到链接？截图上传，AI 直接看图分析（选上面的「广告拆解」用广告标准评）</p>
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              onChange={(e) => {
+                const f = e.target.files?.[0]
+                setImageFile(f || null)
+                setImagePreview(f ? URL.createObjectURL(f) : '')
+              }}
+              style={{ marginBottom: '1rem' }}
+            />
+            {imagePreview && (
+              <img
+                src={imagePreview}
+                alt="preview"
+                style={{ maxWidth: '100%', maxHeight: 220, borderRadius: 10, marginBottom: '1rem', display: 'block' }}
+              />
+            )}
           </>
         ) : (
           <>
@@ -144,7 +206,9 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
           {loading
             ? mode === 'url'
               ? '🎥 抓取 → 转文字 → AI 分析中... (约1-2分钟)'
-              : '🧠 AI 分析中... (约10-30秒)'
+              : mode === 'image'
+                ? '👀 AI 看图分析中... (约20-40秒)'
+                : '🧠 AI 分析中... (约10-30秒)'
             : '✨ 开始分析'}
         </button>
       </div>
