@@ -5,8 +5,7 @@ export async function apiFetch(path, options = {}) {
   const res = await fetch(path, { ...options, headers })
   if (res.status === 401) {
     localStorage.removeItem('siteKey')
-    window.location.reload()
-    throw new Error('密码不对，请重新输入')
+    throw new Error('密码不对或已失效，请刷新页面重新输入密码')
   }
   return res
 }

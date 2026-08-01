@@ -70,15 +70,15 @@ function App() {
   }
 
   useEffect(() => {
-    if (!syncCode) return
+    if (!unlocked || !syncCode) return
     pullCloud(syncCode, reels, savedReelIds)
       .then(() => { syncReady.current = true })
       .catch(() => { syncReady.current = true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [unlocked])
 
   useEffect(() => {
-    if (!syncCode || !syncReady.current) return
+    if (!unlocked || !syncCode || !syncReady.current) return
     clearTimeout(syncTimer.current)
     syncTimer.current = setTimeout(() => {
       apiFetch('/api/library', {
