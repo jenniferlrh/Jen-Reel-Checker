@@ -138,6 +138,9 @@ Rules:
     return jsonResponse({ error: '结果解析失败，请重试。' }, 502)
   }
 
+  // The model sometimes pads the array with an empty extra heading — drop blanks.
+  script.headings = (script.headings || []).filter((h) => h && h.heading && h.heading.trim())
+
   return jsonResponse({ script })
 }
 
