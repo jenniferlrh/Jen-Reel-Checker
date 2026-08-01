@@ -84,6 +84,7 @@ Structure of a full script:
 
 ### Benchmarks
 - Good CPL: **< RM20/lead**. Normal: RM20–33. Kill zone: > RM40.
+- **CPL is only comparable within the SAME audience geo.** INDO traffic is inherently cheap — a mixed MSIA/AUS/INDO/SG campaign will show a low CPL that does NOT mean better ads or better leads. Jennifer's focus market = **MSIA/SG** (her rule, 2026-08-01). Never recommend expanding to INDO/other geos to chase cheap CPL.
 - BJ (Bukit Jalil) angle currently beats KLCC on CPL. CHI-language JBA worked well (RM21).
 - "JV Zoe" co-branded campaigns consistently deliver volume (309/315/189).
 
@@ -100,7 +101,8 @@ Structure of a full script:
 Last-7d snapshot — Jen's Prop: 69 leads @ RM25.31 · WoiiKanFangLor BJ webinar: H1 10 @ RM24.28 (Learning limited), H2/H3/H4 barely delivering · PJ E-Book: H3 14 @ RM19.00, H1/H2/H4 zero delivery.
 
 **加 budget:**
-- 241125 KLCC (MSIA/AUS/INDO/SG) — 7d: 20 leads @ RM15.61，全场最强。budget RM40 → RM52（+30%，一次别加超过30%）
+- ~~241125 KLCC (MSIA/AUS/INDO/SG) RM15.61~~ → **Jennifer 澄清 (08-01)：INDO 流量本来就便宜，但她要 focus MSIA/SG，别被混合受众的低 CPL 骗到**
+- MSIA/SG 纯受众里最强：**300426 BJ (RM20.57)** 和 **311025 KLCC Branninganz JV Zoe (RM23.21)** — 这两个才是可以加 budget 的对象（每次+30%）
 
 **关掉（不吃量/超标）:**
 - WoiiKanFangLor 090326 BJ campaign 里的 **BJ Jen VO H4**（lifetime RM57.76，7天没 leads）和 **H2**（7天只花RM2）— 关掉让 H1 和 H3 分到量
