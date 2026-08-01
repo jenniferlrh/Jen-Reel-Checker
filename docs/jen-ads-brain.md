@@ -110,6 +110,12 @@ Structure of a full script:
 - JBA 中文线（Woii JBA Nov 04/05：RM21-22/lead）— CHI 语言有市场，BJ/KLCC 也可以出 CHI 版
 - "JV Zoe" 合作模式的 campaigns 量都大（309/315/189 leads）— 新 batch 可以继续 JV
 
-## 9. Learnings Log (append after every ad analyzed)
+## 9. Learning Rules (how to use other people's ads)
+
+- Jennifer feeds in OTHER people's ads for study — those can be ANY type (product, course, service, e-com, not necessarily webinar or property).
+- From those ads: extract only the **transferable techniques** — hook patterns, pacing, editing tricks, copy structures, CTA psychology.
+- But HER ads are always **webinar lead-gen** (Bukit Jalil Webinar / KLCC Webinar → lead form → free live group webinar). When generating scripts for her, ALWAYS adapt any borrowed technique into that funnel — never copy another ad's offer/funnel type.
+
+## 10. Learnings Log (append after every ad analyzed)
 
 - 2026-08-01 · Baseline built from script doc + master sheet + 3 ad accounts. Champion pattern = **listing hook + micro-market fear + numbered webinar bullets + emoji-structured copy + lead form**. BJ Jen VO H3 at RM10.29/lead is the one to watch/scale.
