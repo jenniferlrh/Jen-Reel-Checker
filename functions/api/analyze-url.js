@@ -181,6 +181,15 @@ export async function onRequestPost(context) {
   const videoUrl = deepFindVideoUrl(item)
   const meta = pickMeta(item)
 
+  if (body.debug) {
+    return jsonResponse({
+      debug: true,
+      foundVideoUrl: videoUrl,
+      itemKeys: Object.keys(item),
+      itemSample: JSON.stringify(item).slice(0, 3000),
+    })
+  }
+
   if (!videoUrl) {
     return jsonResponse({ error: '这条帖子里找不到视频（可能是图片帖），无法转录。' }, 422)
   }
