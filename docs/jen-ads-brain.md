@@ -95,20 +95,24 @@ Structure of a full script:
 - Subtitles: not too colorful; emphasis words bolded
 - Scripted blocking: "(Turn left)", "(sit down first then start talking)", camera-man as a character in Malay skits
 
-## 8. Action List (2026-08-01 snapshot — for Jennifer to execute)
+## 8. Action List (updated 2026-08-01 with LAST-7-DAY data, 25-31 Jul)
 
-**加 budget（表现好）:**
-- BJ Jen VO **H3** — RM10.29/lead，全场最便宜但只花了 RM226。建议把 H4 的 budget 移给它观察 3-5 天
-- 241125 KLCC (MSIA/AUS/INDO/SG) — RM17.08/lead，可以小步加 20-30%
+Last-7d snapshot — Jen's Prop: 69 leads @ RM25.31 · WoiiKanFangLor BJ webinar: H1 10 @ RM24.28 (Learning limited), H2/H3/H4 barely delivering · PJ E-Book: H3 14 @ RM19.00, H1/H2/H4 zero delivery.
 
-**该关/该查（表现差）:**
-- BJ Jen VO **H4** — RM57.76/lead（超过 kill zone RM40），建议关掉
-- 300426 BJ OPEN MANUAL — RM30.96 且趋势下滑（Ads Manager 显示下滑箭头），观察 3 天没好转就关
-- KLCC - Jen VO P7+H5 Body — 有 Delivery error，进去看一下是什么问题
+**加 budget:**
+- 241125 KLCC (MSIA/AUS/INDO/SG) — 7d: 20 leads @ RM15.61，全场最强。budget RM40 → RM52（+30%，一次别加超过30%）
 
-**值得再测（历史赢家可复活）:**
-- JBA 中文线（Woii JBA Nov 04/05：RM21-22/lead）— CHI 语言有市场，BJ/KLCC 也可以出 CHI 版
-- "JV Zoe" 合作模式的 campaigns 量都大（309/315/189 leads）— 新 batch 可以继续 JV
+**关掉（不吃量/超标）:**
+- WoiiKanFangLor 090326 BJ campaign 里的 **BJ Jen VO H4**（lifetime RM57.76，7天没 leads）和 **H2**（7天只花RM2）— 关掉让 H1 和 H3 分到量
+- 260326 BJ Veladaz JV Zoe — 7d RM38.40 贴近 kill zone，再看3天，破 RM40 就关
+
+**换创意（疲劳了）:**
+- [H1H2H3] BJ OPEN MANUAL — lifetime RM19.14 → 7d RM34.37，heading 疲劳。用 ✍️写Script 生成新 heading，换掉表现最差的2个
+- BJ Jen VO H1 — lifetime RM18.61 → 7d RM24.28 开始爬，准备好新 heading 备用
+
+**正常保持:** 300426 BJ (RM20.57) · 311025 KLCC Branninganz (RM23.21) · 081225 KLCC NL (RM25.21) · PJ E-Book H3 (RM19.00)
+
+**原则:** 每次改动后等3天再判断；一次别改太多个；加budget每次≤30%。
 
 ## 9. Learning Rules (how to use other people's ads)
 
