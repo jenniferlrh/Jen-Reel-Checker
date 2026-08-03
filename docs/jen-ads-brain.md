@@ -134,6 +134,27 @@ New hook types unlocked for the playbook: **Regret/FOMO** ("Missed Mont Kiara 10
 - From those ads: extract only the **transferable techniques** — hook patterns, pacing, editing tricks, copy structures, CTA psychology.
 - But HER ads are always **webinar lead-gen** (Bukit Jalil Webinar / KLCC Webinar → lead form → free live group webinar). When generating scripts for her, ALWAYS adapt any borrowed technique into that funnel — never copy another ad's offer/funnel type.
 
+## 11. Cover / Thumbnail Playbook (researched 2026-08-01)
+
+Full rules live in `functions/api/_cover-rules.js` (fed to /api/analyze-video). Evidence summary:
+
+**Load-bearing studies (the rest of the thumbnail-advice industry is vendor claims or folklore):**
+- *Nature/Scientific Reports* — 8,977 A/B experiments, 35,910 headlines (Upworthy archive): concreteness vs CTR is an **inverted U**. Too vague loses, too specific loses. Sweet spot = "reveal the WHAT, withhold the WHY/HOW."
+- *JAMS 2026* — 22,958 thumbnails: **inverted U for visual complexity** too, strongest for utilitarian content (= her category). One focal point wins.
+- *Outbrain* — 65,000 headlines: negative/loss framing **+63% CTR** vs positive superlatives. This is the evidence behind 避坑-style covers (transferred from native ads, not video, but it's the best there is).
+- Word count: every source converges on **3-5 words English / 6-12 characters Chinese**; 7+ underperforms.
+
+**Platform specs that constrain her layout:** Reels/Stories unified 2026-03 spec — top 14%, bottom 35%, sides 6% reserved. IG profile grid centre-crops Reels covers to 3:4 (~15% off top and bottom). RED covers are 3:4 (1080×1440), note titles hard-capped at 20 chars. TikTok right side is the action rail. **Net rule: cover text lives in the middle third.**
+
+**⚠️ Compliance findings that affect her EXISTING scripts (verify with her own lawyer/compliance — this is research, not legal advice):**
+- **Malaysia HDCLR Reg 8** reportedly prohibits stating projected rental income and travelling distance/time in property advertisements, and applies to organic content too. Her current scripts lean on exactly these: "installment RM3k but rental RM4,500", "8-11% ROI", "less than 5 mins walk to Petronas Twin Tower", "covered walkway to Pavilion". Safer framing = teach the calculation ("how I work out Bukit Jalil rental yield") rather than assert the number.
+- **Meta Personal Attributes policy**: paid ads must not assert or imply knowledge of the viewer's financial status — and questions get no exemption. "Still renting?" / "Can you afford KLCC?" style hooks are risky in paid; rewrite third-person/object-focused. Organic is fine.
+- **Meta guaranteed-return rule**: "guaranteed 6% yield" is a rejection risk; "how I calculate yield" is not.
+- **RED specifics**: clickbait covers are an explicitly listed violation type; 绝对化用语 (最好/第一/唯一/100%/保证) banned; project & developer names on covers read as 硬广 → throttled; cross-border investment solicitation is under active enforcement.
+- **Special Ad Category (Housing)** for MY/SG is genuinely unclear — Meta's docs list US/Canada/parts of Europe, local agencies say it applies. She should check the dropdown in her own Ads Manager per account; if it applies she loses interest targeting and creative carries everything.
+
+**Local nuance:** code-switching research supports Chinese for the emotional hook + English for proper nouns. Always carry the currency mark (RM500k, never bare 50万 — ambiguous across MY/CN readers). Malaysian Chinese property vocabulary: 发展商 (not 开发商), 头期 (not 首付), 产业/房产, 首购族, subsale.
+
 ## 10. Learnings Log (append after every ad analyzed)
 
 - 2026-08-01 · Baseline built from script doc + master sheet + 3 ad accounts. Champion pattern = **listing hook + micro-market fear + numbered webinar bullets + emoji-structured copy + lead form**. BJ Jen VO H3 at RM10.29/lead is the one to watch/scale.
