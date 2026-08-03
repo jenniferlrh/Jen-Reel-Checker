@@ -11,6 +11,7 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
   const [transcript, setTranscript] = useState('')
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState('')
+  const [videoFile, setVideoFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -38,6 +39,35 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
           analysis: data.analysis,
           sourceUrl: data.meta.url,
           platform: data.meta.platform,
+        })
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    } else if (mode === 'video') {
+      if (!videoFile) {
+        setError('请选择你的视频文件')
+        return
+      }
+      if (videoFile.size > 50 * 1024 * 1024) {
+        setError(`视频 ${(videoFile.size / 1024 / 1024).toFixed(0)}MB，超过 50MB 了。先压缩或剪短一点再上传。`)
+        return
+      }
+      setLoading(true)
+      try {
+        const res = await apiFetch('/api/analyze-video', {
+          method: 'POST',
+          headers: { 'content-type': 'application/octet-stream' },
+          body: videoFile,
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error || `分析失败 (${res.status})`)
+        onAnalyzed({
+          creator: creator || '@我的视频',
+          title: title || data.analysis.summary,
+          transcript: data.transcript,
+          analysis: data.analysis,
         })
       } catch (err) {
         setError(err.message)
@@ -140,6 +170,12 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
           >
             📸 截图
           </button>
+          <button
+            className={mode === 'video' ? 'tab active' : 'tab'}
+            onClick={() => setMode('video')}
+          >
+            📹 我的视频
+          </button>
         </div>
 
         {mode === 'url' ? (
@@ -152,6 +188,34 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
+          </>
+        ) : mode === 'video' ? (
+          <>
+            <p className="analyze-hint">
+              上传你自己拍好的视频（mp4 / mov，50MB 以内）。AI 会转文字 + 分析 + 告诉你<strong>封面该放什么字</strong>、用第几秒的画面。
+            </p>
+            <input
+              type="file"
+              accept="video/mp4,video/quicktime,video/*"
+              onChange={(e) => {
+                setVideoFile(e.target.files?.[0] || null)
+                setError('')
+              }}
+              style={{ marginBottom: '1rem' }}
+            />
+            {videoFile && (
+              <p className="analyze-hint" style={{ marginBottom: '1rem' }}>
+                已选：{videoFile.name}（{(videoFile.size / 1024 / 1024).toFixed(1)}MB）
+              </p>
+            )}
+            <div className="analyze-row">
+              <input
+                type="text"
+                placeholder="标记一下是哪条 (可选)"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
           </>
         ) : mode === 'image' ? (
           <>
@@ -206,9 +270,11 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
           {loading
             ? mode === 'url'
               ? '🎥 抓取 → 转文字 → AI 分析中... (约1-2分钟)'
-              : mode === 'image'
-                ? '👀 AI 看图分析中... (约20-40秒)'
-                : '🧠 AI 分析中... (约10-30秒)'
+              : mode === 'video'
+                ? '📤 上传 → 转文字 → 想封面中... (约1-2分钟)'
+                : mode === 'image'
+                  ? '👀 AI 看图分析中... (约20-40秒)'
+                  : '🧠 AI 分析中... (约10-30秒)'
             : '✨ 开始分析'}
         </button>
       </div>

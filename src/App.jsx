@@ -142,7 +142,10 @@ function App() {
       sourceUrl: sourceUrl || null,
       platform: platform || null,
       editingScore: analysis.editingScore ?? null,
-      editingInsights: analysis.editingInsights || null
+      editingInsights: analysis.editingInsights || null,
+      coverTexts: analysis.coverTexts || null,
+      coverFrame: analysis.coverFrame || null,
+      coverVisual: analysis.coverVisual || null
     }
     setReels([newReel, ...reels])
     setShowAnalyzeForm(false)

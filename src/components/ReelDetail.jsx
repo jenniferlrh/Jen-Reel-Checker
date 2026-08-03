@@ -29,6 +29,18 @@ function buildMarkdown(reel) {
       ''
     )
   }
+  if (reel.coverTexts?.length) {
+    lines.push('## 🖼 封面文字方案', '')
+    reel.coverTexts.forEach((c, i) => {
+      lines.push(`### 方案 ${i + 1}（${c.formula}）`, '', '```', c.text, '```', '', `> ${c.why}`, '')
+    })
+    if (reel.coverFrame) {
+      lines.push(`**用第 ${reel.coverFrame.seconds} 秒的画面**：${reel.coverFrame.reason}`, '')
+    }
+    if (reel.coverVisual) {
+      lines.push('**封面美术指导**', '', reel.coverVisual, '')
+    }
+  }
   if (reel.suggestions?.length) {
     lines.push('## 改进建议', '', ...reel.suggestions.map((s) => `- ${s}`), '')
   }
@@ -159,6 +171,35 @@ export default function ReelDetail({ reel, onBack, isSaved, onToggleSave }) {
                     <span>{e}</span>
                   </div>
                 ))}
+              </div>
+            </>
+          )}
+
+          {reel.coverTexts && reel.coverTexts.length > 0 && (
+            <>
+              <div className="detail-section-title">🖼 封面文字方案</div>
+              <div className="insights-list">
+                {reel.coverTexts.map((c, i) => (
+                  <div className="insight-item" key={i} style={{ alignItems: 'flex-start' }}>
+                    <span className="insight-icon">{i + 1}️⃣</span>
+                    <span>
+                      <strong style={{ whiteSpace: 'pre-wrap', display: 'block', fontSize: '1.05em' }}>{c.text}</strong>
+                      <span style={{ opacity: 0.7, fontSize: '0.9em' }}>（{c.formula}）{c.why}</span>
+                    </span>
+                  </div>
+                ))}
+                {reel.coverFrame && (
+                  <div className="insight-item" style={{ alignItems: 'flex-start' }}>
+                    <span className="insight-icon">🎯</span>
+                    <span><strong>用第 {reel.coverFrame.seconds} 秒的画面</strong> — {reel.coverFrame.reason}</span>
+                  </div>
+                )}
+                {reel.coverVisual && (
+                  <div className="insight-item" style={{ alignItems: 'flex-start' }}>
+                    <span className="insight-icon">🎨</span>
+                    <span>{reel.coverVisual}</span>
+                  </div>
+                )}
               </div>
             </>
           )}
