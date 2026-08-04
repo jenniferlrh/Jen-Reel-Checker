@@ -83,6 +83,15 @@ export async function onRequestPost(context) {
   //  B) raw video bytes — fallback when the browser can't decode the file
   const isJson = (request.headers.get('content-type') || '').includes('application/json')
   let media
+  // Optional context the UI passes along so the model doesn't have to guess.
+  let note = (request.headers.get('x-video-note') || '').slice(0, 300)
+  try {
+    note = note ? decodeURIComponent(note) : ''
+  } catch {
+    // header wasn't encoded; use as-is
+  }
+  const isAds = (request.headers.get('x-analysis-mode') || '') === 'ads'
+  let business = (request.headers.get('x-video-business') || 'auto').toLowerCase()
 
   if (isJson) {
     let body
@@ -91,6 +100,8 @@ export async function onRequestPost(context) {
     } catch {
       return jsonResponse({ error: 'Invalid JSON body' }, 400)
     }
+    if (body.note) note = String(body.note).slice(0, 300)
+    if (body.business) business = String(body.business).toLowerCase()
     media = {
       frames: Array.isArray(body.frames) ? body.frames : [],
       timestamps: Array.isArray(body.timestamps) ? body.timestamps : [],
@@ -166,26 +177,47 @@ export async function onRequestPost(context) {
     source: { type: 'base64', media_type: 'image/jpeg', data: b64 },
   }))
 
+  const noteLine = note ? `\nJennifer 给这条视频的备注：「${note}」（以她的备注为准）\n` : ''
+  const businessLine =
+    business === 'homestay'
+      ? '\n📌 Jennifer 已经指明：**这条视频是 4Balance Homestay（民宿/短租管理）的内容**，跟房产投资 webinar 完全无关。分析、建议、封面文字全部只能围绕 homestay 这门生意（招 owner 托管、招住客、展示单位、装修改造等，看视频实际内容而定）。绝对不要出现 Bukit Jalil / KLCC / 项目对比 / webinar 报名。\n'
+      : business === 'property'
+        ? '\n📌 Jennifer 已经指明：**这条视频是房产投资 webinar 那条线的内容**，可以套用下面的广告风格档案（hook 套路、卖点、CPL 标准）。\n'
+        : '\n📌 Jennifer 没有指定主题，你要自己从转录和画面判断这条视频属于哪门生意，然后就事论事分析。\n'
+  const lens = isAds
+    ? '用广告/转化标准评（hook 有没有让人停、痛点清不清楚、卖点差异化、信任元素、CTA 强度）'
+    : '用内容/留存标准评（前3秒抓不抓人、叙事节奏、有没有价值点或情绪点、结尾行动引导）'
+
   content.push({
     type: 'text',
-    text: `这是 Jennifer 自己拍的视频（她是马来西亚房产投资 webinar 的广告主）。上面 ${frames.length} 张图是按时间顺序抽出来的画面，对应的秒数分别是：${timestamps.join(', ')} 秒。视频总长 ${media.duration} 秒。
-
+    text: `这是 Jennifer 自己拍的视频。上面 ${frames.length} 张图是按时间顺序抽出来的画面，对应的秒数分别是：${timestamps.join(', ')} 秒。视频总长 ${media.duration} 秒。
+${businessLine}${noteLine}
 ${transcript ? `视频里说的话（自动转录，可能有错字）：\n"""\n${transcript}\n"""` : '（这条视频没有人声/转录失败，只能看画面判断）'}
 
-=== 她的广告风格与历史数据 ===
+⚠️ 第一步最重要：先从转录和画面判断**这条视频到底在讲什么、在卖什么、给谁看**，然后就事论事地分析它。
+
+Jennifer 有不只一门生意（房产投资 webinar 是其中一门，另外还有 homestay / 短租管理等）。下面那份「广告资料」只是她**过去房产 webinar 广告**的风格档案和历史数据——只能用来参考她的表达风格和质量标准。
+
+绝对不要做的事：
+- 不要假设这条视频是房产 webinar 广告。
+- 如果这条视频的主题不是房产 webinar（例如是 homestay、单位导览、装修、其他业务），**绝对不要**把 Bukit Jalil / KLCC / 项目对比 / webinar 报名 这些内容塞进 insights、suggestions、improvedHooks 或封面文字里。
+- 封面文字必须是这条视频**自己**的主题和卖点，讲给**这条视频的目标观众**听。
+
+=== 参考：她过去房产 webinar 广告的风格档案（只作风格参考）===
 ${ADS_BRAIN}
 === 结束 ===
 
-=== 封面标题研究（必须遵守）===
+=== 封面标题研究（无论什么主题都要遵守）===
 ${COVER_RULES}
 === 结束 ===
 
 任务：
-1. 用广告标准分析这条视频（hook 强不强、结构、说服力），insights/suggestions 要具体、能执行。
-2. 看画面判断剪辑质量 editingScore 和 editingInsights（节奏、画面、字幕、B-roll）。
-3. 最重要：给 5 个**封面文字**方案（coverTexts）。每个用不同的公式，必须符合上面的封面研究规则，语言跟视频一致（中文视频给中文，英文视频给英文，可中英混）。要贴合这条视频真正讲的内容，不要泛泛而谈。
-4. coverFrame：从上面给的秒数里挑一个最适合当封面的画面，讲清楚为什么（要有视觉冲击、有主体、不糊）。
-5. coverVisual：具体的封面美术指导 — 文字放哪里、多大、什么颜色、要不要加箭头/圈/贴纸、要不要裁切。
+1. category 要写这条视频真正的类别（例如 民宿/短租、房产、装修…）。summary 一句话讲清楚它在讲什么、给谁看。
+2. ${lens}。insights/suggestions 要针对这条视频的真实主题，具体、能执行。
+3. 看画面判断剪辑质量 editingScore 和 editingInsights（节奏、画面、字幕、B-roll）。
+4. 最重要：给 5 个**封面文字**方案（coverTexts），每个用不同公式，符合上面的封面研究规则，语言跟视频一致（中文视频给中文，可中英混）。必须贴合这条视频真正的内容。
+5. coverFrame：从上面给的秒数里挑一个最适合当封面的画面（要有视觉冲击、有主体、不糊），讲清楚为什么。
+6. coverVisual：具体封面美术指导 — 文字放哪、多大、什么颜色、要不要加箭头/圈、要不要裁切。
 
 全部分析用中文写。`,
   })

@@ -14,6 +14,7 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
   const [imagePreview, setImagePreview] = useState('')
   const [videoFile, setVideoFile] = useState(null)
   const [videoStage, setVideoStage] = useState('')
+  const [business, setBusiness] = useState('auto')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -65,8 +66,11 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
           setVideoStage('🧠 AI 分析 + 想封面中...')
           res = await apiFetch('/api/analyze-video', {
             method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify(prepped),
+            headers: {
+              'content-type': 'application/json',
+              'x-analysis-mode': analysisType === 'ads' ? 'ads' : 'content',
+            },
+            body: JSON.stringify({ ...prepped, business, note: title }),
           })
         } catch {
           // Browser couldn't decode it (e.g. HEVC .mov) — send the file itself.
@@ -78,7 +82,12 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
           setVideoStage('📤 换方式：整个上传中...')
           res = await apiFetch('/api/analyze-video', {
             method: 'POST',
-            headers: { 'content-type': 'application/octet-stream' },
+            headers: {
+              'content-type': 'application/octet-stream',
+              'x-analysis-mode': analysisType === 'ads' ? 'ads' : 'content',
+              'x-video-business': business,
+              'x-video-note': encodeURIComponent(title || ''),
+            },
             body: videoFile,
           })
         }
@@ -230,10 +239,31 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
                 已选：{videoFile.name}（{(videoFile.size / 1024 / 1024).toFixed(1)}MB）
               </p>
             )}
+            <label className="input-label">这条视频是关于什么？</label>
+            <div className="analyze-tabs" style={{ flexWrap: 'wrap' }}>
+              <button
+                className={business === 'auto' ? 'tab active' : 'tab'}
+                onClick={() => setBusiness('auto')}
+              >
+                🤖 自动判断
+              </button>
+              <button
+                className={business === 'homestay' ? 'tab active' : 'tab'}
+                onClick={() => setBusiness('homestay')}
+              >
+                🏠 Homestay
+              </button>
+              <button
+                className={business === 'property' ? 'tab active' : 'tab'}
+                onClick={() => setBusiness('property')}
+              >
+                🏢 房产 Webinar
+              </button>
+            </div>
             <div className="analyze-row">
               <input
                 type="text"
-                placeholder="标记一下是哪条 (可选)"
+                placeholder="想补充什么就写（可选），例如：这条是给 owner 看的"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />

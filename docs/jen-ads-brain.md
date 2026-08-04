@@ -5,7 +5,13 @@ Updated: 2026-08-01 (initial version — built from her script materials + 3 ad 
 
 ---
 
-## 1. The Business & Funnel
+## 0. ⚠️ Jennifer has MORE THAN ONE business — don't assume everything is property
+
+This document is about her **property-investment webinar ads only**. She also runs **4Balance Homestay** (short-term rental / homestay management — owner units under management, guest stays, unit tours, renovations; e.g. a Kelana Jaya PJ bungalow). Videos and ads for that business have completely different audiences (unit owners looking for a manager, and guests) and completely different selling points.
+
+**Rule: never apply the hooks, projects (Bukit Jalil/KLCC), webinar CTA or CPL benchmarks in this document to non-property content.** Identify what a video/ad is actually about first, then analyse it on its own terms. The website's 📹我的视频 mode has a 🏠 Homestay / 🏢 房产 Webinar / 🤖 自动判断 selector for exactly this reason.
+
+## 1. The Business & Funnel (property webinar line)
 
 - Brand page: **Woii-看房咯** (property content, KL market)
 - Core funnel: FB video ad → Lead Form ("Group Webinar for all X New Projects in …") → free live group webinar (~1hr, 80–100 pax) → property sales
