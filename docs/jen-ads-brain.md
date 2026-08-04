@@ -161,6 +161,21 @@ Full rules live in `functions/api/_cover-rules.js` (fed to /api/analyze-video). 
 
 **Local nuance:** code-switching research supports Chinese for the emotional hook + English for proper nouns. Always carry the currency mark (RM500k, never bare 50万 — ambiguous across MY/CN readers). Malaysian Chinese property vocabulary: 发展商 (not 开发商), 头期 (not 首付), 产业/房产, 首购族, subsale.
 
+## 8c. BJ Chinese-Ads Competitive Landscape (Ads Library sweep, 2026-08-04)
+
+Searched FB Ads Library (MY, active) for Bukit Jalil Chinese property ads. Kendrick Tay's page ("Kendrick Tay", Estate agent) shows **zero ads** — his webinar ads must run under another page (name unknown; ask Jennifer if she finds one).
+
+**Strategic finding: "Bukit Jalil webinar" active ads = 8 results, ALL hers (Woii-看房咯).** Nobody else runs a webinar funnel for BJ. Every competitor is direct-response (WhatsApp / PM / brochure / showroom), pushing ONE project each. Her webinar's neutral compare-all positioning is unique in the space — counter-positioning against the ad flood is a legitimate hook.
+
+Competitor ads worth learning from (all active Jul-Aug 2026):
+- **墨镜男带你看房** — 4 identical copies (aggressive testing/scaling): 「投资房产，月供RM2,500，租金收RM3,000-3,500。从第一天就是正现金流…租金cover月供还有剩，让钱帮你赚钱」. Headline format 「Bukit Jalil投资｜供2500租金3500｜走路到医院」 (｜-separated, number-first). NOTE: asserts projected rent — the thing HDCLR Reg 8 flags; her versions must quote-and-question instead of assert.
+- **KL New Launch KL房产** — runs the SAME creative in ENG + CHI as separate ads (bilingual pair strategy = validation for her CHI line). Dense emoji-bullet spec sheet (golf view, 50m/500m/600m walk distances, RM1,700 起). CTA 「点击领取项目手册 & 一键对比所有Bukit Jalil新项目」 — a *static-brochure* version of her webinar promise; her counter = live, interactive, ask-questions.
+- **Bukit Jalil New Property** — price-pressure/alternative hook: 「现在 Bukit Jalil 的新项目越来越贵‼️ 隔壁 Bukit Serdang RM3XX千就买得到」 + 供款从RM15XX + school list for young families. The "BJ getting expensive" tension is real and usable.
+- **Bukit Jalil Prime Living** — lifestyle no-car hook: 「在 KL，真的有地方可以不靠车生活吗？」 LRT/Pavilion/公园 walkable, soft PM CTA.
+- **Yugi Properties** — incentive-mechanics hook: 「2027搬进去免费住两年，2029才开始供房」 + positions self as 「房产知识博主」 (knowledge-blogger framing, like her).
+
+Takeaways for her scripts: number-first ｜-separated headlines; cashflow math as a QUESTION (quote what agents claim, then "let's check the real data") stays compliant and taps the same desire; "BJ 越来越贵" affordability tension; counter-position against single-project ad bombardment ("every ad says 2 minutes to Pavilion — they can't all be the best one").
+
 ## 10. Learnings Log (append after every ad analyzed)
 
 - 2026-08-01 · Baseline built from script doc + master sheet + 3 ad accounts. Champion pattern = **listing hook + micro-market fear + numbered webinar bullets + emoji-structured copy + lead form**. BJ Jen VO H3 at RM10.29/lead is the one to watch/scale.
