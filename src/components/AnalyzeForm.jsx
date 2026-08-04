@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './AnalyzeForm.css'
 import { apiFetch } from '../lib/api'
+import { prepVideo } from '../lib/videoPrep'
 
 export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
   const [mode, setMode] = useState('url')
@@ -12,6 +13,7 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState('')
   const [videoFile, setVideoFile] = useState(null)
+  const [videoStage, setVideoStage] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -50,17 +52,36 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
         setError('请选择你的视频文件')
         return
       }
-      if (videoFile.size > 50 * 1024 * 1024) {
-        setError(`视频 ${(videoFile.size / 1024 / 1024).toFixed(0)}MB，超过 50MB 了。先压缩或剪短一点再上传。`)
-        return
-      }
       setLoading(true)
       try {
-        const res = await apiFetch('/api/analyze-video', {
-          method: 'POST',
-          headers: { 'content-type': 'application/octet-stream' },
-          body: videoFile,
-        })
+        // Preferred path: pull frames + a small WAV out in the browser, so the
+        // upload is a few MB regardless of how big the original file is.
+        let res
+        try {
+          setVideoStage('📦 在浏览器里提取画面和声音...')
+          const prepped = await prepVideo(videoFile, (pct) =>
+            setVideoStage(`📦 提取中 ${pct}%（不用压缩，只传需要的部分）`)
+          )
+          setVideoStage('🧠 AI 分析 + 想封面中...')
+          res = await apiFetch('/api/analyze-video', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(prepped),
+          })
+        } catch {
+          // Browser couldn't decode it (e.g. HEVC .mov) — send the file itself.
+          if (videoFile.size > 50 * 1024 * 1024) {
+            throw new Error(
+              `这个格式浏览器读不出来，只能整个上传，但文件有 ${(videoFile.size / 1024 / 1024).toFixed(0)}MB。用 CapCut 导出成 mp4 会小很多。`
+            )
+          }
+          setVideoStage('📤 换方式：整个上传中...')
+          res = await apiFetch('/api/analyze-video', {
+            method: 'POST',
+            headers: { 'content-type': 'application/octet-stream' },
+            body: videoFile,
+          })
+        }
         const data = await res.json()
         if (!res.ok) throw new Error(data.error || `分析失败 (${res.status})`)
         onAnalyzed({
@@ -73,6 +94,7 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
         setError(err.message)
       } finally {
         setLoading(false)
+        setVideoStage('')
       }
     } else if (mode === 'image') {
       if (!imageFile) {
@@ -192,7 +214,7 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
         ) : mode === 'video' ? (
           <>
             <p className="analyze-hint">
-              上传你自己拍好的视频（mp4 / mov，50MB 以内）。AI 会转文字 + 分析 + 告诉你<strong>封面该放什么字</strong>、用第几秒的画面。
+              上传你自己拍好的视频（mp4 / mov，<strong>多大都行，不用压缩</strong>）。AI 会转文字 + 分析 + 告诉你<strong>封面该放什么字</strong>、用第几秒的画面。
             </p>
             <input
               type="file"
@@ -271,7 +293,7 @@ export default function AnalyzeForm({ onClose, onAnalyzed, initialUrl = '' }) {
             ? mode === 'url'
               ? '🎥 抓取 → 转文字 → AI 分析中... (约1-2分钟)'
               : mode === 'video'
-                ? '📤 上传 → 转文字 → 想封面中... (约1-2分钟)'
+                ? videoStage || '📤 处理中...'
                 : mode === 'image'
                   ? '👀 AI 看图分析中... (约20-40秒)'
                   : '🧠 AI 分析中... (约10-30秒)'

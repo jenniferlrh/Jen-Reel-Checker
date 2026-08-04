@@ -78,34 +78,53 @@ export async function onRequestPost(context) {
     return jsonResponse({ error: `还没设置：${missing.join(', ')}` }, 500)
   }
 
-  const declared = Number(request.headers.get('content-length') || 0)
-  if (declared > MAX_BYTES) {
-    return jsonResponse({ error: '视频超过 50MB，请先压缩或剪短一点再上传。' }, 413)
-  }
-
-  const bytes = await request.arrayBuffer()
-  if (!bytes || bytes.byteLength < 1000) {
-    return jsonResponse({ error: '没有收到视频文件。' }, 400)
-  }
-  if (bytes.byteLength > MAX_BYTES) {
-    return jsonResponse({ error: '视频超过 50MB，请先压缩或剪短一点再上传。' }, 413)
-  }
-
-  // ---- Step 1: frames + normalized audio on the droplet ----
+  // Two ways in:
+  //  A) JSON — the browser already pulled out frames + a small WAV (no size limit)
+  //  B) raw video bytes — fallback when the browser can't decode the file
+  const isJson = (request.headers.get('content-type') || '').includes('application/json')
   let media
-  try {
-    const mr = await fetch(MEDIA_URL, {
-      method: 'POST',
-      headers: { 'content-type': 'application/octet-stream', 'x-jrc-key': env.ADMIN_KEY },
-      body: bytes,
-    })
-    if (!mr.ok) {
-      const detail = await mr.text().catch(() => '')
-      return jsonResponse({ error: `处理视频失败 (${mr.status}) ${detail.slice(0, 200)}` }, 502)
+
+  if (isJson) {
+    let body
+    try {
+      body = await request.json()
+    } catch {
+      return jsonResponse({ error: 'Invalid JSON body' }, 400)
     }
-    media = await mr.json()
-  } catch (e) {
-    return jsonResponse({ error: `处理视频失败：${String(e.message || e)}` }, 502)
+    media = {
+      frames: Array.isArray(body.frames) ? body.frames : [],
+      timestamps: Array.isArray(body.timestamps) ? body.timestamps : [],
+      duration: body.duration || null,
+      audio: body.audioWav || null,
+      audioType: 'wav',
+    }
+  } else {
+    const declared = Number(request.headers.get('content-length') || 0)
+    if (declared > MAX_BYTES) {
+      return jsonResponse({ error: '这个视频太大了（浏览器也读不出来）。用 CapCut 导出成 mp4 再试。' }, 413)
+    }
+    const bytes = await request.arrayBuffer()
+    if (!bytes || bytes.byteLength < 1000) {
+      return jsonResponse({ error: '没有收到视频文件。' }, 400)
+    }
+    if (bytes.byteLength > MAX_BYTES) {
+      return jsonResponse({ error: '这个视频太大了（浏览器也读不出来）。用 CapCut 导出成 mp4 再试。' }, 413)
+    }
+    try {
+      const mr = await fetch(MEDIA_URL, {
+        method: 'POST',
+        headers: { 'content-type': 'application/octet-stream', 'x-jrc-key': env.ADMIN_KEY },
+        body: bytes,
+      })
+      if (!mr.ok) {
+        const detail = await mr.text().catch(() => '')
+        return jsonResponse({ error: `处理视频失败 (${mr.status}) ${detail.slice(0, 200)}` }, 502)
+      }
+      media = await mr.json()
+      media.audioType = 'mp3'
+    } catch (e) {
+      return jsonResponse({ error: `处理视频失败：${String(e.message || e)}` }, 502)
+    }
   }
 
   const frames = Array.isArray(media.frames) ? media.frames.slice(0, 8) : []
@@ -119,8 +138,13 @@ export async function onRequestPost(context) {
   if (media.audio) {
     try {
       const raw = Uint8Array.from(atob(media.audio), (c) => c.charCodeAt(0))
+      const isWav = media.audioType === 'wav'
       const form = new FormData()
-      form.append('file', new Blob([raw], { type: 'audio/mpeg' }), 'audio.mp3')
+      form.append(
+        'file',
+        new Blob([raw], { type: isWav ? 'audio/wav' : 'audio/mpeg' }),
+        isWav ? 'audio.wav' : 'audio.mp3'
+      )
       form.append('model', 'whisper-1')
       const wr = await fetch('https://api.openai.com/v1/audio/transcriptions', {
         method: 'POST',
