@@ -127,7 +127,7 @@ export async function onRequestPost(context) {
     }
   }
 
-  const frames = Array.isArray(media.frames) ? media.frames.slice(0, 8) : []
+  const frames = Array.isArray(media.frames) ? media.frames.slice(0, 16) : []
   const timestamps = Array.isArray(media.timestamps) ? media.timestamps : []
   if (!frames.length) {
     return jsonResponse({ error: '这个视频读不出画面，换个格式（mp4）再试。' }, 422)

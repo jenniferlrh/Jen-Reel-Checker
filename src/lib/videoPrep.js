@@ -7,10 +7,18 @@ const FRAME_WIDTH = 480
 const AUDIO_RATE = 16000
 const MAX_AUDIO_DECODE_BYTES = 200 * 1024 * 1024
 
+function frameCount(duration) {
+  // Longer video, more frames — extraction is local and cheap, so cover the
+  // whole thing rather than sampling a 90s ad at one frame per 11 seconds.
+  if (duration <= 20) return 8
+  if (duration <= 45) return 12
+  return 16
+}
+
 function coverTimestamps(duration) {
   // Dense in the opening (that's where covers come from), then spread out.
   const early = [0.3, 1, 2, 3].filter((t) => t < duration)
-  const restN = Math.max(8 - early.length, 2)
+  const restN = Math.max(frameCount(duration) - early.length, 2)
   const start = Math.min(4, duration)
   const step = Math.max((duration - start) / restN, 0.1)
   const rest = []
