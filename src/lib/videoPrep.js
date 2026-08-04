@@ -28,13 +28,31 @@ function coverTimestamps(duration) {
   return [...early, ...rest]
 }
 
-function loadVideo(file) {
+const METADATA_TIMEOUT = 12000
+const SEEK_TIMEOUT = 6000
+const AUDIO_TIMEOUT = 45000
+
+function withTimeout(promise, ms, message) {
   return new Promise((resolve, reject) => {
-    const video = document.createElement('video')
-    video.preload = 'auto'
-    video.muted = true
-    video.playsInline = true
-    video.src = URL.createObjectURL(file)
+    const timer = setTimeout(() => reject(new Error(message)), ms)
+    promise.then(
+      (v) => { clearTimeout(timer); resolve(v) },
+      (e) => { clearTimeout(timer); reject(e) }
+    )
+  })
+}
+
+function loadVideo(file) {
+  // Some containers never fire loadedmetadata and never error either (e.g.
+  // MediaRecorder webm with no duration header) — without a timeout the whole
+  // upload would hang, so treat silence as "browser can't read this".
+  const video = document.createElement('video')
+  video.preload = 'auto'
+  video.muted = true
+  video.playsInline = true
+  video.src = URL.createObjectURL(file)
+
+  const ready = new Promise((resolve, reject) => {
     video.onloadedmetadata = () => {
       if (!video.videoWidth || !video.duration || !isFinite(video.duration)) {
         reject(new Error('browser cannot decode this video'))
@@ -44,22 +62,21 @@ function loadVideo(file) {
     }
     video.onerror = () => reject(new Error('browser cannot decode this video'))
   })
+
+  return withTimeout(ready, METADATA_TIMEOUT, 'browser cannot decode this video').catch((e) => {
+    URL.revokeObjectURL(video.src)
+    video.src = ''
+    throw e
+  })
 }
 
 function seekTo(video, time) {
-  return new Promise((resolve, reject) => {
-    const done = () => {
-      video.removeEventListener('seeked', done)
-      resolve()
-    }
-    const fail = () => {
-      video.removeEventListener('error', fail)
-      reject(new Error('seek failed'))
-    }
-    video.addEventListener('seeked', done, { once: true })
-    video.addEventListener('error', fail, { once: true })
+  const seeked = new Promise((resolve, reject) => {
+    video.addEventListener('seeked', () => resolve(), { once: true })
+    video.addEventListener('error', () => reject(new Error('seek failed')), { once: true })
     video.currentTime = time
   })
+  return withTimeout(seeked, SEEK_TIMEOUT, 'seek timed out')
 }
 
 async function extractFrames(video, timestamps, onProgress) {
@@ -136,7 +153,11 @@ async function extractAudio(file) {
   const ctx = new AC()
   let decoded
   try {
-    decoded = await ctx.decodeAudioData(await file.arrayBuffer())
+    decoded = await withTimeout(
+      ctx.decodeAudioData(await file.arrayBuffer()),
+      AUDIO_TIMEOUT,
+      'audio decode timed out'
+    )
   } catch {
     return null // no audio track, or a codec the browser won't decode
   } finally {
