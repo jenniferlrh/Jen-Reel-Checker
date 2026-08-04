@@ -176,6 +176,31 @@ Competitor ads worth learning from (all active Jul-Aug 2026):
 
 Takeaways for her scripts: number-first ｜-separated headlines; cashflow math as a QUESTION (quote what agents claim, then "let's check the real data") stays compliant and taps the same desire; "BJ 越来越贵" affordability tension; counter-position against single-project ad bombardment ("every ad says 2 minutes to Pavilion — they can't all be the best one").
 
+## 8d. Kendrick Properties teardown (BJ Chinese webinar competitor — deep analysis 2026-08-04)
+
+Page: **Kendrick Properties** (page_id 511858362014320, 18 followers). 2 active ads (11 Jul & 30 Jul 2026), both 1:23 vertical, same landing 「免费分享会：避开 Bukit Jalil 的坑」. **He uses Jennifer's exact modular format**: 2 hooks + ONE shared body + shared CTA + shared closing line.
+
+**His script structure (both ads):**
+1. Hook 0-15s — Ad1: quote the buyer's own fear 「"BJ 新项目太多，会不会 oversupply？" 你的担心只对了一半」; Ad2: news-jack 「BJ 塞车问题上新闻了」(real junction news footage)
+2. **EARLY mid-video CTA at ~25-30s** 「如果你不想买错项目 怕踩雷 可以点击以下参加」 then continues — catches early scrollers, rare technique
+3. Core mental model: **蛋黄区 (egg-yolk zone)** — simpler than "5 zones": binary core vs outer. Core = LRT+Pavilion+医疗+国际学校+高尔夫 all present
+4. Villain: 挂名项目 — 「大部分挂着 Bukit Jalil 名义的项目根本不在核心圈里…有些开车10-15分钟才到 Pavilion，有些就在廉价屋和工业区里。他们只是用着 Bukit Jalil 的名义」
+5. **Oversupply flip → scarcity**: 「大多数租不出去的都是外围项目，蛋黄区里的新项目少得屈指可数」 (turns the #1 objection into urgency)
+6. Webinar promise: 8 projects 优势/缺点/风险, 真数据案例, under 1 hour, interactive Q&A 现场解决问题
+7. Aspiration: 「看看 BJ 是否有机会成为下一个 Mont Kiara 或者 Bandar Sunway」 — SAME comparison as Jennifer's unshot draft hook. Her draft is validated; move fast
+8. Low-pressure CTA: 「点击查看时间与日期，看看是不是符合你的安排」
+9. Closing zinger: 「价格贵不可怕，最可怕的是买到没有未来的项目」
+
+**Video/editing (from frames):** karaoke-style big captions with yellow serif pop on place names · green-screen head over BJ skyline · project-poster collage with counters (#15, #16 Bukit Jalil) visualizing ">10 projects" · **real Excel rental-data screenshot** (rows of Bukit Jalil rentals, RM4,500-8,000 highlight pill) — "真实数据不是销售话术" shown, not just said · golf course + BJ towers drone · old-flats footage to visualize 廉价屋/外围 · on-screen ✅❌ comparison table (vs Bangsar South) · end card = color-coded 5-zone map + landing page screenshot with testimonial comments + red arrows 「点击以上链接」. Some stock/AI footage (Ai watermark).
+
+**His weaknesses = her openings:**
+- His landing pushes **"BOOK YOUR 1-ON-1 PRIVATE PREVIEW SESSION"** — the 分享会 funnels into a 1-on-1 sales call. Her 「real group webinar, NOT 1-on-1 Zoom, no commitment」 line is a direct counter — say it louder.
+- 96 slots vs her 80; his "under 1 hour" promise is good, she already says 1 hour.
+- Chinese-only; she can flank in ENG + CHI (bilingual pair like KL New Launch).
+- Small page (18 followers) vs her Woii-看房咯 brand + testimonial history.
+
+**Steal for her ads:** 蛋黄区 concept (or English "core zone vs name-only zone") · oversupply-flip · fake-BJ-name villain · early mid-video CTA · closing zinger · Excel-data-flash + zone-map end card + ✅❌ table as B-roll patterns.
+
 ## 10. Learnings Log (append after every ad analyzed)
 
 - 2026-08-01 · Baseline built from script doc + master sheet + 3 ad accounts. Champion pattern = **listing hook + micro-market fear + numbered webinar bullets + emoji-structured copy + lead form**. BJ Jen VO H3 at RM10.29/lead is the one to watch/scale.
