@@ -134,6 +134,27 @@ Jennifer wrote a new BJ heading batch (not filmed yet). Assessment — perfect t
 
 New hook types unlocked for the playbook: **Regret/FOMO** ("Missed Mont Kiara 10 years ago?") and **Agent spam-calls** — usable for KLCC line too (e.g. "Missed KLCC in 2015?").
 
+## 8f. AI B-roll Playbook — 即梦 Jimeng (2026-08-05)
+
+**Tool & settings:** 即梦 jimeng.jianying.com (login: 4Balance Jen Chrome, Profile 14). Model **Seedance 2.5**, 16:9, 720P; 5s ≈ 130 credits, transformations need **10s**. Test prompts on Seedance 2.0 mini (half price) before finals. Chinese prompts work best. Upload image via 「+参考内容」→ it becomes 图片1 in the prompt.
+
+**Prompt patterns that work:**
+- Flythrough: 「电影感航拍镜头，无人机快速向前飞越…黄金时刻…流畅电影运镜，超写实，4K画质」
+- Grow-to-her-photo (end frame = her image): 「延时摄影效果…从一片空旷的荒地开始…高楼一栋接一栋生长出来…最终画面完全变成图片1的城市景观」 + tail 「结尾定格在图片1」 if ending drifts
+- Her-photo-as-start: 「以图片1为起始画面，…」
+- Malaysia look: append 「东南亚吉隆坡风格建筑，热带绿植环绕」 if output looks too China-city
+
+**Hard learnings:**
+- ❌ 「倒放/倒流/时间倒转」FAILS (生成失败) — Seedance only generates forward time. Fix: generate the GROW version forward, editor reverses in CapCut (one clip = two uses: forward for H1, reversed for H4). Forward-described dissolving (「像沙粒一样崩解消散」) can also pass.
+- Chrome silently blocks the site's multiple automatic downloads after ~3 files ("下载成功" toast still shows but no file lands). Fix once: address bar → blocked-download icon (or 🔒 → 网站设置 → 自动下载) → Allow for jimeng.jianying.com.
+- Jimeng download filenames are long Chinese prompt strings — rename per convention below.
+
+**File naming convention:** `段落-第几句 内容.mp4` → Drive folder 「BJ Webinar v4 - AI Broll」. Full 17-item list (file name → script line) lives in the BJ-Webinar-Script-Final PDF (pages 4-5, sent to her Telegram 05/08). Key items: H1-1/2/3 MontKiara/Sunway/BukitJalil Fly + Grow versions (Fly vs Grow = editor A/B), H1-4 Construction Grow, H1-5 Generic Condo (red-× target, never a real project), H2-1 Concert Stadium, H3-1 Towers Stamp, H4-2 SplitWorld, H4-3 DarkTower / Reverse Empty (二选一), H4-4 LitTower, SUB-3 Unit Interior Glide (same clip split-screened twice, RM X vs RM 2X), BODY-2 GoldenZone, CTA-1 GoldCoins.
+
+**AI usage rules:** AI shots = atmosphere & transitions only (flythroughs, transformations, metaphors). NEVER AI: the Excel/real-data shots, her talking head, webinar comment screenshots — those must be real or the "real data not sales talk" positioning dies. Use no-watermark output (Kendrick's ad shows an "Ai" watermark — looks cheap). Max 1-2 transformation shots per video.
+
+**Image prep shortcuts:** Google Earth Pro (free) historical-imagery slider = legal before/after aerials (BJ 2008-2012 empty land vs now); real BJ old satellite shot as the Grow start frame reads authentic.
+
 ## 9. Learning Rules (how to use other people's ads)
 
 - Jennifer feeds in OTHER people's ads for study — those can be ANY type (product, course, service, e-com, not necessarily webinar or property).
