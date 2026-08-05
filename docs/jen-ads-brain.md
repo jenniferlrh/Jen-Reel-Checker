@@ -201,6 +201,33 @@ Page: **Kendrick Properties** (page_id 511858362014320, 18 followers). 2 active 
 
 **Steal for her ads:** 蛋黄区 concept (or English "core zone vs name-only zone") · oversupply-flip · fake-BJ-name villain · early mid-video CTA · closing zinger · Excel-data-flash + zone-map end card + ✅❌ table as B-roll patterns.
 
+## 8e. FINAL BJ English batch (v4 — combined + 4-lens judged, 2026-08-04)
+
+Merged her Telegram batch + V2, then passed a 4-judge panel (her-voice fidelity / originality-vs-Kendrick / copy craft / compliance). Verified: the Mont Kiara + Bandar Sunway pairing is HER OWN (in her unshot draft sheet) — kept. Changes applied: replaced the price-vs-choice closing zinger (structural clone of Kendrick's) with a closer built on her 5-min/double-rental fact; reworked H2 (jam-proves-value flip was his move → homestay-rate differential, which only she can say authentically); reworked H4 (objection-then-half-concede was his Ad1 shape → lead with data contrast); H1 switched to third person (Meta personal-attributes risk) + concrete RM700,000; H3 names moved to on-screen flash only with criticism kept generic (disparagement risk); added her signature CTA bonus ("which project our team bought & why"); body bullets now mirror champion ("5 key zones" first), "All 8" → "the 8 projects buyers are actually asking about"; long lines broken into subtitle beats.
+
+**HEADING 1 (regret/FOMO — HER pairing, third-person for paid):**
+Some investors watched Mont Kiara take off 10 years ago. / Then Bandar Sunway did the same. / Bukit Jalil… might be the next name on that list. / (B-roll captions, not narrated: LRT · golf · universities · medical hub · int'l schools · Pavilion mall — ONE township) / And right now, it's quietly starting to grow again. / But buy the WRONG project here… / and the mistake can cost up to RM700,000. → Sub
+
+**HEADING 2 (concert — homestay-rate differential, uniquely hers):**
+One concert at Bukit Jalil… / and the whole area jams up for hours. / But here's what most owners miss: / that same weekend, homestay rates in ONE zone shoot up — / and stay completely flat in another. / Same concert. Same crowd. Two very different results. → Sub
+
+**HEADING 3 (ads/agents villain — names on screen only):**
+More than 10 new projects in Bukit Jalil. / (names flash as on-screen text: Park Green, Queenswoodz, Kingswoodz, OAKA, Vividz, Ren Residence, Ayanna, Avantro, Sunway Flora) / Every ad sounds the same: / "2 minutes to Pavilion. Best investment." / They can't ALL be the best one. / And every agent's job is to push the ONE project they carry. / Comparing them one by one? There go your weekends. / That's why we created a FREE online group webinar. → Body direct
+
+**HEADING 4 (data contrast — no objection-concede shape):**
+Pull Bukit Jalil's transaction data… / and you'll find two opposite markets under one name. / Zones with unsold units stacking up — / right next to zones that can't keep up with tenant demand. / Which is which? / That's exactly what this FREE online group webinar breaks down. → Body direct
+
+**SUBHEADING (H1 & H2, her sheet verbatim):**
+Bukit Jalil is not one market. / There are 5 different zones and more than 10 new projects. / Same layout, 5 minutes apart — rental can differ up to DOUBLE. / That means… you can buy in the right area, / but still pick the WRONG project. / That's why we created a FREE online group webinar to break down everything clearly for you.
+
+**BODY (all):**
+In this webinar, we will show you: / – Bukit Jalil's 5 key zones / – The 8 projects buyers are actually asking about — compared on risks & positioning, not just features / – Real case studies & live transaction data — including why some KL properties haven't grown in 10 years / All in just 1 hour. / This is a real GROUP webinar. / Not a "free sharing" that becomes a 1-on-1 sales appointment. / No commitment needed — comment live, ask questions, and hear what other buyers think.
+
+**CTA (all):**
+We'll also share which project our own team bought — and the reason why we chose it. / This live session is limited to 80 slots only. / Click the link below to check the date and time now, before it's full. / Because in Bukit Jalil, 5 minutes in the wrong direction… / can cost you HALF the rental. Every month. For years.
+
+Assembly: V1=H1+Sub+Body+CTA (⭐first) · V2=H2+Sub+Body+CTA (concert weeks) · V3=H3+Body+CTA · V4=H4+Body+CTA. Production: early mini-CTA lands naturally at ~25-30s (the "That's why we created…" line); B-roll = real data-table flash, ✅❌ compare table, 5-zone color map end card; V1/V2 run ~90s — keep VO pace brisk. Project roster: confirm with Jennifer which 8 are current (champion list has 9 names).
+
 ## 10. Learnings Log (append after every ad analyzed)
 
 - 2026-08-01 · Baseline built from script doc + master sheet + 3 ad accounts. Champion pattern = **listing hook + micro-market fear + numbered webinar bullets + emoji-structured copy + lead form**. BJ Jen VO H3 at RM10.29/lead is the one to watch/scale.
